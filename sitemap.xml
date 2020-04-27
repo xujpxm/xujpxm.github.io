@@ -1,50 +1,50 @@
-<?xml-stylesheet type="text/xsl" href="https://blog.iyue.pub/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="http://blog.iyue.pub/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://blog.iyue.pub/post/</loc>
+    <loc>http://blog.iyue.pub/post/</loc>
     <lastmod>2020-04-27T14:37:34+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://blog.iyue.pub/tags/</loc>
+    <loc>http://blog.iyue.pub/tags/</loc>
     <lastmod>2020-04-27T14:37:34+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://blog.iyue.pub/tags/test/</loc>
+    <loc>http://blog.iyue.pub/tags/test/</loc>
     <lastmod>2020-04-27T14:37:34+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://blog.iyue.pub/post/tttt/</loc>
+    <loc>http://blog.iyue.pub/post/tttt/</loc>
     <lastmod>2020-04-27T14:37:34+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://blog.iyue.pub/about/</loc>
+    <loc>http://blog.iyue.pub/about/</loc>
     <lastmod>2020-04-21T16:59:51+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://blog.iyue.pub/</loc>
+    <loc>http://blog.iyue.pub/</loc>
     <lastmod>2020-04-21T16:59:51+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://blog.iyue.pub/categories/</loc>
+    <loc>http://blog.iyue.pub/categories/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
