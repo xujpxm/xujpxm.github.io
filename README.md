@@ -1,1 +1,1 @@
-## https://blog.iyue.pub
+## https://iyue.pub
