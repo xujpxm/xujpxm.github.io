@@ -1,145 +1,151 @@
-<!DOCTYPE html>
-<html lang="zh-cn">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>听说你的Nginx还不会记录Response Body? - IYue 爱月 | xujpxm的博客</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="xujpxm" /><meta name="description" content="相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&amp;hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。
-" /><meta name="keywords" content="Hugo, even, iyue, xujpxm, DevOps" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.69.0 with theme even" />
-
-
-<link rel="canonical" href="https://blog.iyue.pub/post/nginx-log-with-response-body/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
-
-
-
-<meta property="og:title" content="听说你的Nginx还不会记录Response Body?" />
-<meta property="og:description" content="相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://blog.iyue.pub/post/nginx-log-with-response-body/" />
-<meta property="article:published_time" content="2020-05-01T10:24:29+08:00" />
-<meta property="article:modified_time" content="2020-05-01T10:24:29+08:00" />
-<meta itemprop="name" content="听说你的Nginx还不会记录Response Body?">
-<meta itemprop="description" content="相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。">
-<meta itemprop="datePublished" content="2020-05-01T10:24:29&#43;08:00" />
-<meta itemprop="dateModified" content="2020-05-01T10:24:29&#43;08:00" />
-<meta itemprop="wordCount" content="2092">
-
-
-
-<meta itemprop="keywords" content="Nginx," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="听说你的Nginx还不会记录Response Body?"/>
-<meta name="twitter:description" content="相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">IYue</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">首页</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">分类</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">标签</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">归档</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">关于</li>
-      </a>
-  </ul>
-</nav>
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">IYue</a>
-</div>
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">首页</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">分类</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">标签</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">归档</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">关于</a>
-      </li>
-  </ul>
-</nav>
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
-    
-    <header class="post-header">
-      <h1 class="post-title">听说你的Nginx还不会记录Response Body?</h1>
-
-      <div class="post-meta">
-        <span class="post-time"> 2020-05-01 </span>
-        <div class="post-category">
-            <a href="/categories/service/"> Service </a>
-            </div>
-          <span class="more-meta"> 约 2092 字 </span>
-          <span class="more-meta"> 预计阅读 5 分钟 </span>
+    <title>听说你的Nginx还不会记录Response Body? | IYue</title>
+    <meta property="og:title" content="听说你的Nginx还不会记录Response Body? - IYue">
+    <meta property="og:type" content="article">
         
-      </div>
-    </header>
+    <meta property="article:published_time" content='2020-05-01T10:24:29&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-05-01T10:24:29&#43;08:00'>
+        
+    <meta name="Keywords" content="iyue,xujpxm,博客,运维开发,golang,python">
+    <meta name="description" content="听说你的Nginx还不会记录Response Body?">
+        
+    <meta name="author" content="xujpxm">
+    <meta property="og:url" content="https://iyue.pub/post/nginx-log-with-response-body/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">文章目录</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-2770385078098302",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/my_toc_style.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://iyue.pub">
+                        IYue
+                    </a>
+                
+                <p class="description">爱月 - XUJPXM的博客</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://iyue.pub">首页</a>
+                    
+                    <a  href="https://iyue.pub/categories/" title="分类">分类</a>
+                    
+                    <a  href="https://iyue.pub/tags/" title="标签">标签</a>
+                    
+                    <a  href="https://iyue.pub/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://iyue.pub/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
   <ul>
     <li><a href="#nginx编译安装">Nginx编译安装</a>
       <ul>
@@ -160,327 +166,377 @@
     <li><a href="#参考文档连接">参考文档连接</a></li>
   </ul>
 </nav>
-  </div>
+    </div>
 </div>
-    <div class="post-content">
-      <p>相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。</p>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">听说你的Nginx还不会记录Response Body?</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年5月1日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://iyue.pub/categories/Service'>Service</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <p>相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有request_body/upstream_addr/upstream_response_time这些相近变量可用；这个时候不要慌&hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。</p>
 <h2 id="nginx编译安装">Nginx编译安装</h2>
 <p>将Nginx和Lua结合可以使用<a href="https://openresty.org/cn/">OpenResty</a>，也可以使用淘宝开源的<a href="http://tengine.taobao.org/documentation_cn.html">Tengine</a>，Tengine完全兼容Nginx；下面我们以Nginx编译lua模块为例:</p>
 <p>我的系统环境：Ubuntu 14.04</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 先安装pcre库，Redhat系的机器对应的包可能为pcre-devel；也可以自己手动编译</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 先安装pcre库，Redhat系的机器对应的包可能为pcre-devel；也可以自己手动编译</span>
 aptitude -y install libpcre3-dev
-<span class="c1"># 下载并编译安装Lua解释器-LuaJIT</span>
+<span style="color:#75715e"># 下载并编译安装Lua解释器-LuaJIT</span>
 wget -c https://github.com/openresty/luajit2/archive/v2.1-20200102.tar.gz
 tar -zxvf v2.1-20200102.tar.gz
-<span class="nb">cd</span> ./luajit2-2.1-20200102
-make <span class="o">&amp;&amp;</span> make install
+cd ./luajit2-2.1-20200102
+make <span style="color:#f92672">&amp;&amp;</span> make install
 
-<span class="c1"># 告诉操作系统luajit的路径</span>
-<span class="nb">export</span> <span class="nv">LUAJIT_LIB</span><span class="o">=</span>/usr/local/lib
-<span class="nb">export</span> <span class="nv">LUAJIT_INC</span><span class="o">=</span>/usr/local/include/luajit-2.1
-<span class="c1"># 写进配置文件，为luajit配置动态链接库</span>
-<span class="nb">echo</span> <span class="s1">&#39;/usr/local/lib/&#39;</span> &gt;&gt; /etc/ld.so.conf.d/luajit_so.conf
+<span style="color:#75715e"># 告诉操作系统luajit的路径</span>
+export LUAJIT_LIB<span style="color:#f92672">=</span>/usr/local/lib
+export LUAJIT_INC<span style="color:#f92672">=</span>/usr/local/include/luajit-2.1
+<span style="color:#75715e"># 写进配置文件，为luajit配置动态链接库</span>
+echo <span style="color:#e6db74">&#39;/usr/local/lib/&#39;</span> &gt;&gt; /etc/ld.so.conf.d/luajit_so.conf
 ldconfig
 
-<span class="c1"># 下载并解压Nginx编译所需的模块</span>
-<span class="c1"># OpenResty Lua 模块</span>
+<span style="color:#75715e"># 下载并解压Nginx编译所需的模块</span>
+<span style="color:#75715e"># OpenResty Lua 模块</span>
 wget -c wget -c https://github.com/openresty/lua-nginx-module/archive/v0.10.14.tar.gz
 tar -zxvf v0.10.14.tar.gz
 
-<span class="c1"># ngx_devel_kit 模块</span>
+<span style="color:#75715e"># ngx_devel_kit 模块</span>
 wget -c https://github.com/vision5/ngx_devel_kit/archive/v0.3.1.tar.gz
 tar -zxvf v0.3.1.tar.gz
 
-<span class="c1"># 下载Nginx源码并编译安装</span>
+<span style="color:#75715e"># 下载Nginx源码并编译安装</span>
 wget -c https://nginx.org/download/nginx-1.17.8.tar.gz
 tar -zxvf nginx-1.17.8.tar.gz
-<span class="nb">cd</span> nginx-1.17.8
-<span class="c1"># 简单编译示例</span>
-./configure --user<span class="o">=</span>www --group<span class="o">=</span>www --prefix<span class="o">=</span>/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --add-module<span class="o">=</span>../ngx_devel_kit-0.3.1 --add-module<span class="o">=</span>../lua-nginx-module-0.10.16rc5
+cd nginx-1.17.8
+<span style="color:#75715e"># 简单编译示例</span>
+./configure --user<span style="color:#f92672">=</span>www --group<span style="color:#f92672">=</span>www --prefix<span style="color:#f92672">=</span>/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --add-module<span style="color:#f92672">=</span>../ngx_devel_kit-0.3.1 --add-module<span style="color:#f92672">=</span>../lua-nginx-module-0.10.16rc5
 
-make <span class="o">&amp;&amp;</span> make install
+make <span style="color:#f92672">&amp;&amp;</span> make install
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="nginx版本和模块信息查看">Nginx版本和模块信息查看</h3>
 <p>可以使用<code>-V</code>选项查看编译好的Nginx版本和模块信息</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">/usr/local/nginx/sbin/nginx -V
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/usr/local/nginx/sbin/nginx -V
 
 nginx version: nginx/1.17.8
-built by gcc 4.8.4 <span class="o">(</span>Ubuntu 4.8.4-2ubuntu1~14.04.3<span class="o">)</span>
-built with OpenSSL 1.0.1f <span class="m">6</span> Jan <span class="m">2014</span>
+built by gcc 4.8.4 <span style="color:#f92672">(</span>Ubuntu 4.8.4-2ubuntu1~14.04.3<span style="color:#f92672">)</span>
+built with OpenSSL 1.0.1f <span style="color:#ae81ff">6</span> Jan <span style="color:#ae81ff">2014</span>
 TLS SNI support enabled
-configure arguments: --user<span class="o">=</span>www --group<span class="o">=</span>www --prefix<span class="o">=</span>/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --add-module<span class="o">=</span>../ngx_devel_kit-0.3.1 --add-module<span class="o">=</span>../lua-nginx-module-0.10.14
+configure arguments: --user<span style="color:#f92672">=</span>www --group<span style="color:#f92672">=</span>www --prefix<span style="color:#f92672">=</span>/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --add-module<span style="color:#f92672">=</span>../ngx_devel_kit-0.3.1 --add-module<span style="color:#f92672">=</span>../lua-nginx-module-0.10.14
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="nginx配置与lua的配置">Nginx配置与lua的配置</h2>
 <p>下面是一个Nginx的简单配置示例，为使Nginx Conf的结构更清晰，我们使用<code>include</code>关键字，将log/lua/server几部分的配置拆分成单个独立的配置文件；下面看下每部分配置的示例：</p>
 <h3 id="context-http示例">Context HTTP示例</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">cd</span> /usr/local/nginx/conf
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cd /usr/local/nginx/conf
 cat nginx.conf
 
-user  www www<span class="p">;</span>
-worker_processes  auto<span class="p">;</span>
+user  www www;
+worker_processes  auto;
 
-error_log  /data/nginx/logs/error.log warn<span class="p">;</span>
-pid        /data/nginx/nginx.pid<span class="p">;</span>
-events <span class="o">{</span>
-    worker_connections  4096<span class="p">;</span>
-<span class="o">}</span>
+error_log  /data/nginx/logs/error.log warn;
+pid        /data/nginx/nginx.pid;
+events <span style="color:#f92672">{</span>
+    worker_connections  4096;
+<span style="color:#f92672">}</span>
 
-http <span class="o">{</span>
-    include       mime.types<span class="p">;</span>
-    default_type  application/octet-stream<span class="p">;</span>
-    sendfile        on<span class="p">;</span>
-    keepalive_timeout  65<span class="p">;</span>
-    gzip  on<span class="p">;</span>
-    charset utf-8<span class="p">;</span>
-    <span class="c1"># 日志格式配置文件</span>
-    include common/log_formats.conf<span class="p">;</span>
-    <span class="c1"># 虚机主机配置</span>
-    include vhost/iyue_test.conf<span class="p">;</span>
+http <span style="color:#f92672">{</span>
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    gzip  on;
+    charset utf-8;
+    <span style="color:#75715e"># 日志格式配置文件</span>
+    include common/log_formats.conf;
+    <span style="color:#75715e"># 虚机主机配置</span>
+    include vhost/iyue_test.conf;
 
-<span class="o">}</span>
+<span style="color:#f92672">}</span>
 
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="context-server示例">Context Server示例</h3>
 <p>这里我们用nginx代理GitHub的API接口来作为测试；自定义变量  <code>resp_body</code>(默认为空)用来存放Response Body的值，并通过lua功能模块来为其赋值。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">cat vhost/iyue_test.conf
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat vhost/iyue_test.conf
 
-server <span class="o">{</span>
+server <span style="color:#f92672">{</span>
 
-    listen       80<span class="p">;</span>
-    server_name test.iyue.pub<span class="p">;</span>
+    listen       80;
+    server_name test.iyue.pub;
 
-    proxy_ignore_client_abort on<span class="p">;</span>
-    fastcgi_ignore_client_abort on<span class="p">;</span>
+    proxy_ignore_client_abort on;
+    fastcgi_ignore_client_abort on;
 
-    root /data/htdocs/iyue<span class="p">;</span>
-    <span class="c1"># 指定日志输出文件和日志格式为iyue_log</span>
-    access_log /data/nginx/logs/iyue_access.log iyue_log<span class="p">;</span>
-    <span class="c1"># 自定义一个resp_body的变量，用来存放Response Body信息</span>
-    <span class="nb">set</span> <span class="nv">$resp_body</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
-    <span class="c1"># 也可以使用body_filter_by_lua指令，将lua代码直接展示在这里；推荐采用文件的配置形式，方便后期维护</span>
-    body_filter_by_lua_file conf/lua/get_resp_code.lua<span class="p">;</span>
+    root /data/htdocs/iyue;
+    <span style="color:#75715e"># 指定日志输出文件和日志格式为iyue_log</span>
+    access_log /data/nginx/logs/iyue_access.log iyue_log;
+    <span style="color:#75715e"># 自定义一个resp_body的变量，用来存放Response Body信息</span>
+    set $resp_body <span style="color:#e6db74">&#34;&#34;</span>;
+    <span style="color:#75715e"># 也可以使用body_filter_by_lua指令，将lua代码直接展示在这里；推荐采用文件的配置形式，方便后期维护</span>
+    body_filter_by_lua_file conf/lua/get_resp_code.lua;
 
-    <span class="c1"># 通过nginx配置代理github api，用于测试结果展示</span>
-    location /github/api/ <span class="o">{</span>
-        proxy_pass https://api.github.com/<span class="p">;</span>
-        proxy_http_version 1.1<span class="p">;</span>
-        proxy_set_header Connection <span class="s2">&#34;&#34;</span><span class="p">;</span>
-        <span class="c1">#proxy_set_header Host $host;</span>
-        proxy_set_header Host api.github.com<span class="p">;</span>
-        proxy_set_header X-Forwarded-For <span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
+    <span style="color:#75715e"># 通过nginx配置代理github api，用于测试结果展示</span>
+    location /github/api/ <span style="color:#f92672">{</span>
+        proxy_pass https://api.github.com/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection <span style="color:#e6db74">&#34;&#34;</span>;
+        <span style="color:#75715e">#proxy_set_header Host $host;</span>
+        proxy_set_header Host api.github.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="lua代码示例">lua代码示例</h3>
 <p>获取Respondy Body的值，并赋值给变量$resp_body:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">cat lua/get_resp.lua
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat lua/get_resp.lua
 
-<span class="nb">local</span> <span class="nv">chunk</span> <span class="o">=</span> string.sub<span class="o">(</span>ngx.arg<span class="o">[</span>1<span class="o">]</span>, 1, 1000<span class="o">)</span>
-ngx.ctx.buffered <span class="o">=</span> <span class="o">(</span>ngx.ctx.buffered or <span class="s2">&#34;&#34;</span><span class="o">)</span> .. chunk
-<span class="k">if</span> ngx.arg<span class="o">[</span>2<span class="o">]</span> <span class="k">then</span>
-    <span class="nb">local</span> <span class="nv">resp</span> <span class="o">=</span> ngx.ctx.buffered
-    ngx.var.resp_body <span class="o">=</span> resp
+local chunk <span style="color:#f92672">=</span> string.sub<span style="color:#f92672">(</span>ngx.arg<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>, 1, 1000<span style="color:#f92672">)</span>
+ngx.ctx.buffered <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ngx.ctx.buffered or <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">)</span> .. chunk
+<span style="color:#66d9ef">if</span> ngx.arg<span style="color:#f92672">[</span>2<span style="color:#f92672">]</span> <span style="color:#66d9ef">then</span>
+    local resp <span style="color:#f92672">=</span> ngx.ctx.buffered
+    ngx.var.resp_body <span style="color:#f92672">=</span> resp
 end
 </code></pre></td></tr></table>
 </div>
 </div><p>这里ngx.arg[2]是一个bool类型；通过lua获取到整个Response Body的信息后，赋值给变量$resp_body；后面可以在log中打印该变量的值；</p>
 <h3 id="log_format示例">log_format示例</h3>
 <p>定义日志格式，并在log中打印自定义变量$resp_body；这里将其放到最后方便我们观察：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"> cat common/log_formats.conf
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"> cat common/log_formats.conf
 
-log_format  iyue_log  <span class="s1">&#39;$remote_addr $http_x_forwarded_for [$time_local] $request_method $uri $args $request_body $server_protocol $status $body_bytes_sent $http_referer $http_user_agent $request_length rspt:$upstream_response_time rqtt:$request_time up:$upstream_addr $remote_port $host $resp_body&#39;</span><span class="p">;</span>
+log_format  iyue_log  <span style="color:#e6db74">&#39;$remote_addr $http_x_forwarded_for [$time_local] $request_method $uri $args $request_body $server_protocol $status $body_bytes_sent $http_referer $http_user_agent $request_length rspt:$upstream_response_time rqtt:$request_time up:$upstream_addr $remote_port $host $resp_body&#39;</span>;
 
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="结果展示">结果展示</h3>
 <p>发起测试请求</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">curl http://test.iyue.pub/github/api/
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl http://test.iyue.pub/github/api/
 </code></pre></td></tr></table>
 </div>
 </div><p>从输出日志中，我们可以看到nginx已正常记录了Response Body的信息：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">192.168.10.11 - <span class="o">[</span>04/May/2020:17:35:55 +0800<span class="o">]</span> GET /github/api/ - - HTTP/1.1 <span class="m">200</span> <span class="m">2178</span> - curl/7.54.0 <span class="m">88</span> rspt:0.884 rqtt:0.880 up:140.82.113.5:443 <span class="m">64502</span> test.iyue.pub <span class="o">{</span><span class="se">\x</span>22current_user_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/user<span class="se">\x</span>22,<span class="se">\x</span>22current_user_authorizations_html_url<span class="se">\x</span>22:<span class="se">\x</span>22https://github.com/settings/connections/applications<span class="o">{</span>/client_id<span class="o">}</span><span class="se">\x</span>22,<span class="se">\x</span>22authorizations_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/authorizations<span class="se">\x</span>22,<span class="se">\x</span>22code_search_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/search/code?q<span class="o">={</span>query<span class="o">}{</span><span class="p">&amp;</span>page,per_page,sort,order<span class="o">}</span><span class="se">\x</span>22,<span class="se">\x</span>22commit_search_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/search/commits?q<span class="o">={</span>query<span class="o">}{</span><span class="p">&amp;</span>page,per_page,sort,order<span class="o">}</span><span class="se">\x</span>22,<span class="se">\x</span>22emails_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/user/emails<span class="se">\x</span>22,<span class="se">\x</span>22emojis_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/emojis<span class="se">\x</span>22,<span class="se">\x</span>22events_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/events<span class="se">\x</span>22,<span class="se">\x</span>22feeds_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/feeds<span class="se">\x</span>22,<span class="se">\x</span>22followers_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/user/followers<span class="se">\x</span>22,<span class="se">\x</span>22following_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/user/following<span class="o">{</span>/target<span class="o">}</span><span class="se">\x</span>22,<span class="se">\x</span>22gists_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/gists<span class="o">{</span>/gist_id<span class="o">}</span><span class="se">\x</span>22,<span class="se">\x</span>22hub_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/hub<span class="se">\x</span>22,<span class="se">\x</span>22issue_search_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/search/issues?q<span class="o">={</span>query<span class="o">}{</span><span class="p">&amp;</span>page,per_page,sort,order<span class="o">}</span><span class="se">\x</span>22,<span class="se">\x</span>22issues_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/issues<span class="se">\x</span>22,<span class="se">\x</span>22keys_url<span class="se">\x</span>22:<span class="se">\x</span>22https://api.github.com/user/keys<span class="se">\x</span>22,<span class="se">\x</span>22label_searc
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">192.168.10.11 - <span style="color:#f92672">[</span>04/May/2020:17:35:55 +0800<span style="color:#f92672">]</span> GET /github/api/ - - HTTP/1.1 <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">2178</span> - curl/7.54.0 <span style="color:#ae81ff">88</span> rspt:0.884 rqtt:0.880 up:140.82.113.5:443 <span style="color:#ae81ff">64502</span> test.iyue.pub <span style="color:#f92672">{</span><span style="color:#ae81ff">\x</span>22current_user_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/user<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22current_user_authorizations_html_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://github.com/settings/connections/applications<span style="color:#f92672">{</span>/client_id<span style="color:#f92672">}</span><span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22authorizations_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/authorizations<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22code_search_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/search/code?q<span style="color:#f92672">={</span>query<span style="color:#f92672">}{</span>&amp;page,per_page,sort,order<span style="color:#f92672">}</span><span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22commit_search_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/search/commits?q<span style="color:#f92672">={</span>query<span style="color:#f92672">}{</span>&amp;page,per_page,sort,order<span style="color:#f92672">}</span><span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22emails_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/user/emails<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22emojis_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/emojis<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22events_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/events<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22feeds_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/feeds<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22followers_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/user/followers<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22following_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/user/following<span style="color:#f92672">{</span>/target<span style="color:#f92672">}</span><span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22gists_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/gists<span style="color:#f92672">{</span>/gist_id<span style="color:#f92672">}</span><span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22hub_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/hub<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22issue_search_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/search/issues?q<span style="color:#f92672">={</span>query<span style="color:#f92672">}{</span>&amp;page,per_page,sort,order<span style="color:#f92672">}</span><span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22issues_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/issues<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22keys_url<span style="color:#ae81ff">\x</span>22:<span style="color:#ae81ff">\x</span>22https://api.github.com/user/keys<span style="color:#ae81ff">\x</span>22,<span style="color:#ae81ff">\x</span>22label_searc
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="response-body过滤">Response Body过滤</h3>
 <p>通过上面的日志输出结果，我们看到日志中的带有&rsquo;x22'的字样，这其实是双引号的16进制ASCII码；所以大家也能看出，这种打印出所有Response Body内容的方式，对特殊字符或中文输出不是很友好；这里建议的方案是，只输出你需要的Response Body中的某一片段，且输出结果尽量为英文；我们的lua代码可以进一步加下过滤输出，比如我们只输出匹配Response Body中&rsquo;current_user_url'的结果，lua代码可变更为：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">cat lua/get_resp.lua
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat lua/get_resp.lua
 
-<span class="nb">local</span> <span class="nv">chunk</span> <span class="o">=</span> string.sub<span class="o">(</span>ngx.arg<span class="o">[</span>1<span class="o">]</span>, 1, 1000<span class="o">)</span>
-ngx.ctx.buffered <span class="o">=</span> <span class="o">(</span>ngx.ctx.buffered or <span class="s2">&#34;&#34;</span><span class="o">)</span> .. chunk
-<span class="k">if</span> ngx.arg<span class="o">[</span>2<span class="o">]</span> <span class="k">then</span>
-    <span class="nb">local</span> <span class="nv">resp</span> <span class="o">=</span> ngx.ctx.buffered
-    <span class="nb">local</span> <span class="nv">user_url</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
-    <span class="nv">user_url</span> <span class="o">=</span> string.match<span class="o">(</span>resp, <span class="s2">&#34;\x22current_user_url\x22: \x22(.[^,]+)\x22&#34;</span><span class="o">)</span>
-    ngx.var.resp_body <span class="o">=</span> user_url
+local chunk <span style="color:#f92672">=</span> string.sub<span style="color:#f92672">(</span>ngx.arg<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>, 1, 1000<span style="color:#f92672">)</span>
+ngx.ctx.buffered <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ngx.ctx.buffered or <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">)</span> .. chunk
+<span style="color:#66d9ef">if</span> ngx.arg<span style="color:#f92672">[</span>2<span style="color:#f92672">]</span> <span style="color:#66d9ef">then</span>
+    local resp <span style="color:#f92672">=</span> ngx.ctx.buffered
+    local user_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+    user_url <span style="color:#f92672">=</span> string.match<span style="color:#f92672">(</span>resp, <span style="color:#e6db74">&#34;\x22current_user_url\x22: \x22(.[^,]+)\x22&#34;</span><span style="color:#f92672">)</span>
+    ngx.var.resp_body <span style="color:#f92672">=</span> user_url
 end
 
 </code></pre></td></tr></table>
 </div>
 </div><p>优化后的日志输出结果为:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">192.168.10.11 - <span class="o">[</span>04/May/2020:18:05:40 +0800<span class="o">]</span> GET /github/api/ - - HTTP/1.1 <span class="m">200</span> <span class="m">2308</span> - curl/7.54.0 <span class="m">88</span> rspt:0.900 rqtt:0.897 up:140.82.112.6:443 <span class="m">50340</span> test.iyue.pub https://api.github.com/user
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">192.168.10.11 - <span style="color:#f92672">[</span>04/May/2020:18:05:40 +0800<span style="color:#f92672">]</span> GET /github/api/ - - HTTP/1.1 <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">2308</span> - curl/7.54.0 <span style="color:#ae81ff">88</span> rspt:0.900 rqtt:0.897 up:140.82.112.6:443 <span style="color:#ae81ff">50340</span> test.iyue.pub https://api.github.com/user
 </code></pre></td></tr></table>
 </div>
 </div><p>可以看到日志格式更加整齐，且获取到了&quot;current_user_url&quot;对应的结果并正确打印。</p>
@@ -497,109 +553,168 @@ end
 <li>LuaJIT下载: <a href="https://github.com/openresty/luajit2/releases">https://github.com/openresty/luajit2/releases</a></li>
 <li>ngx_devel_kit(NDK)模块下载: <a href="https://github.com/vision5/ngx_devel_kit/tags">https://github.com/vision5/ngx_devel_kit/tags</a></li>
 </ul>
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">文章作者</span>
-    <span class="item-content">xujpxm</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">上次更新</span>
-    <span class="item-content">
-        2020-05-01
-        
-    </span>
-  </p>
-  
-  
-</div>
-<div class="post-reward">
-  <input type="checkbox" name="reward" id="reward" hidden />
-  <label class="reward-button" for="reward">赞赏支持</label>
-  <div class="qr-code">
-    
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/about/wechat_pay_qrcode.jpeg">
-        <span>微信打赏</span>
-      </label>
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/about/alipay_qrcode.jpeg">
-        <span>支付宝打赏</span>
-      </label>
-  </div>
-</div><footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/nginx/">Nginx</a>
-          </div>
-      <nav class="post-nav">
-        
-        
-      </nav>
-    </footer>
-  </article>
         </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="https://iyue.pub">xujpxm</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://iyue.pub/post/nginx-log-with-response-body/">https://iyue.pub/post/nginx-log-with-response-body/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
         
 
-  
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/about/">About</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+        <li><a href="/search/">搜索</a></li>
+        
+    </ul>
+</div>
 
-  
-    <script src="https://utteranc.es/client.js"
-            repo="xujpxm/myblog"
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://iyue.pub/tags/Nginx'>Nginx</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "xujpxm/myblog"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="mailto:xujpxm@163.com;xujpxm@gmail.com;" class="iconfont icon-email" title="email"></a>
-      <a href="https://github.com/xujpxm/" class="iconfont icon-github" title="github"></a>
-  <a href="https://blog.iyue.pub/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    主题 - 
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy; 
-    2018 - 
-    2020
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">xujpxm</span>
-  </span>
-</div>
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
+      </script>
     </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://iyue.pub/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://iyue.pub">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://iyue.pub/post/nginx-log-with-response-body/" title="听说你的Nginx还不会记录Response Body?">听说你的Nginx还不会记录Response Body?</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利派送</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="" title="广告位，虚位以待" target="_blank" style="color:red">
+                
+                    广告位，虚位以待
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
 
 
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://iyue.pub/categories/Service/">Service (1)</a></li>
+    
+</ul>
+    </section>
 
-<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://iyue.pub/tags/Nginx/">Nginx</a>
+    
+</div>
+    </section>
 
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.flysnow.org/" title="飞雪无情的博客">飞雪无情的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://iyue.pub/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://iyue.pub">IYue By xujpxm</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 <script type="application/javascript">
 var doNotTrack = false;
@@ -617,6 +732,6 @@ if (!doNotTrack) {
 
 
 
-
 </body>
+
 </html>

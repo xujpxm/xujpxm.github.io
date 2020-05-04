@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>IYue 爱月 | xujpxm的博客</title>
-    <link>https://blog.iyue.pub/</link>
-    <description>Recent content on IYue 爱月 | xujpxm的博客</description>
+    <title>IYue</title>
+    <link>https://iyue.pub/</link>
+    <description>Recent content on IYue</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>xujpxm</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Tue, 21 Apr 2020 16:59:51 +0800</lastBuildDate>
     
-	<atom:link href="https://blog.iyue.pub/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://iyue.pub/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>听说你的Nginx还不会记录Response Body?</title>
-      <link>https://blog.iyue.pub/post/nginx-log-with-response-body/</link>
+      <link>https://iyue.pub/post/nginx-log-with-response-body/</link>
       <pubDate>Fri, 01 May 2020 10:24:29 +0800</pubDate>
       
-      <guid>https://blog.iyue.pub/post/nginx-log-with-response-body/</guid>
-      <description>&lt;p&gt;相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&amp;hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。&lt;/p&gt;</description>
+      <guid>https://iyue.pub/post/nginx-log-with-response-body/</guid>
+      <description>&lt;p&gt;相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有request_body/upstream_addr/upstream_response_time这些相近变量可用；这个时候不要慌&amp;hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>https://blog.iyue.pub/about/</link>
+      <link>https://iyue.pub/about/</link>
       <pubDate>Tue, 21 Apr 2020 16:59:51 +0800</pubDate>
       
-      <guid>https://blog.iyue.pub/about/</guid>
-      <description>关于本站 本站名为IYue，意为“爱月”。采用hugo驱动，主题为Even。自己从14年开始写博客，之前都是发表在51CTO、微信公众号、今日</description>
+      <guid>https://iyue.pub/about/</guid>
+      <description>关于本站 本站名为IYue，意为“爱月”。采用hugo驱动，主题为Maupassant。自己从14年开始写博客，之前都是发表在51CTO、微信公众号、今日头条等平台上，后来手里囤了几个域名，本着不浪费资源的原则，于是诞生了本站。 关于我 xujpxm，习惯用双拼+自然码打字。大学在呼啸</description>
+    </item>
+    
+    <item>
+      <title>归档</title>
+      <link>https://iyue.pub/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://iyue.pub/archives/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>搜索</title>
+      <link>https://iyue.pub/search/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://iyue.pub/search/</guid>
+      <description></description>
     </item>
     
   </channel>

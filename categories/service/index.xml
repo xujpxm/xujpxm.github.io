@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Service on IYue 爱月 | xujpxm的博客</title>
-    <link>https://blog.iyue.pub/categories/service/</link>
-    <description>Recent content in Service on IYue 爱月 | xujpxm的博客</description>
+    <title>Service on IYue</title>
+    <link>https://iyue.pub/categories/Service/</link>
+    <description>Recent content in Service on IYue</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>xujpxm</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Fri, 01 May 2020 10:24:29 +0800</lastBuildDate>
     
-	<atom:link href="https://blog.iyue.pub/categories/service/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://iyue.pub/categories/Service/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>听说你的Nginx还不会记录Response Body?</title>
-      <link>https://blog.iyue.pub/post/nginx-log-with-response-body/</link>
+      <link>https://iyue.pub/post/nginx-log-with-response-body/</link>
       <pubDate>Fri, 01 May 2020 10:24:29 +0800</pubDate>
       
-      <guid>https://blog.iyue.pub/post/nginx-log-with-response-body/</guid>
-      <description>&lt;p&gt;相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有$request_body/$upstream_addr/$upstream_response_time这些相近变量可用；这个时候不要慌&amp;hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。&lt;/p&gt;</description>
+      <guid>https://iyue.pub/post/nginx-log-with-response-body/</guid>
+      <description>&lt;p&gt;相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有request_body/upstream_addr/upstream_response_time这些相近变量可用；这个时候不要慌&amp;hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。&lt;/p&gt;</description>
     </item>
     
   </channel>
