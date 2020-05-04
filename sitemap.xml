@@ -2,6 +2,48 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.iyue.pub/categories/</loc>
+    <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.iyue.pub/tags/nginx/</loc>
+    <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.iyue.pub/post/</loc>
+    <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.iyue.pub/categories/service/</loc>
+    <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.iyue.pub/tags/</loc>
+    <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.iyue.pub/post/nginx-log-with-response-body/</loc>
+    <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.iyue.pub/about/</loc>
     <lastmod>2020-04-21T16:59:51+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -11,18 +53,6 @@
   <url>
     <loc>https://blog.iyue.pub/</loc>
     <lastmod>2020-04-21T16:59:51+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.iyue.pub/categories/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.iyue.pub/tags/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
