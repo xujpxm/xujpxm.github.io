@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Supervisord守护Prometheus遇到的坑 | IYue</title>
+    <meta property="og:title" content="Supervisord守护Prometheus遇到的坑 - IYue">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-06-10T16:37:18&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-06-10T16:37:18&#43;08:00'>
+        
+    <meta name="Keywords" content="iyue,xujpxm,博客,运维开发,golang,python">
+    <meta name="description" content="Supervisord守护Prometheus遇到的坑">
+        
+    <meta name="author" content="xujpxm">
+    <meta property="og:url" content="https://www.iyue.pub/post/supervisor-with-prometheus/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-2770385078098302",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/my_toc_style.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://www.iyue.pub">
+                        IYue
+                    </a>
+                
+                <p class="description">爱月 - XUJPXM的博客</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://www.iyue.pub">首页</a>
+                    
+                    <a  href="https://www.iyue.pub/categories/" title="分类">分类</a>
+                    
+                    <a  href="https://www.iyue.pub/tags/" title="标签">标签</a>
+                    
+                    <a  href="https://www.iyue.pub/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://www.iyue.pub/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#排查思路">排查思路</a></li>
+    <li><a href="#原因定位">原因定位</a></li>
+    <li><a href="#问题修复">问题修复</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Supervisord守护Prometheus遇到的坑</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年6月10日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7'>监控</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <p>一直以来我采用supervisord来进行第三方服务的管理，百试不爽。所谓的第三方服务，我这里把不能通过yum或apt进行安装的，统统归拢为第三方；当然使用systemd来进行管理也很不错，不过在服务exit的时候需要自己写脚本来进行重启和重试操作。不例外的，Prometheus我还是采用了supervisord来进行启动管理，但是过完年后上班发现，我的prometheus无法收集targets的监控数据了，8百多个监控接口的数据丢了三天；排查后发现是由于supervisor引起的。于是整理出来，大家分享一下我的排查路线。</p>
+<h2 id="排查思路">排查思路</h2>
+<ol>
+<li>
+<p>发现Prometheus监控的Targets状态全部变为Down，查看页面详细报错信息和服务日志：
+<img src="http://i2.51cto.com/images/blog/201803/01/3b76b8674c79a1434f7461fd44a495ea.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="监控挂掉">
+<img src="http://i2.51cto.com/images/blog/201803/01/5f481119f35cc3a668dd728503feb17b.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="服务日志"><br>
+从页面和日志中发现基本被&quot;file closed&quot;的报错信息所淹没：“err=&quot;WAL log samples: log series: write data/wal/002911: file already closed&rdquo;。</p>
+</li>
+<li>
+<p>本着优先恢复业务的运维原则，尝试重启其中一台Prometheus服务，发现重启后服务日志依旧报错，信息如下：</p>
+</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">level<span style="color:#f92672">=</span>error ts<span style="color:#f92672">=</span>2018-02-26T02:26:38.80774862Z caller<span style="color:#f92672">=</span>db.go:265 component<span style="color:#f92672">=</span>tsdb msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;compaction failed&#34;</span> err<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;compact [/data/prometheus/prometheus/data/01C6S070KRF0V2202ZKPB4BTG4 /data/prometheus/prometheus/data/01C6TY0J7RAQAA34JJQVQZ3D46 /data/prometheus/prometheus/data/01C6WVSZB66DBAXBSYPMZGJ29W]: open /data/prometheus/prometheus/data/01C6TY0J7RAQAA34JJQVQZ3D46/tombstones: too many open files
+</span></code></pre></td></tr></table>
+</div>
+</div><p>看到日志关键字段：“<strong>too many open files</strong>”!
+3. 根据重启前和重启后的日志关键字眼，初步判定跟文件描述符有关，Linux系统对单进程可最大打开文件数默认限制为1024，我这里监控了800多个节点，每个节点暴露上百个监控数据，平均没分钟抓取一次，需要定期的进行数据落盘操作，可能是系统的文件描述符过低导致的。
+4、检查系统文件描述符情况：
+①检查inodes使用情况：
+<img src="http://i2.51cto.com/images/blog/201803/01/483b1fb5baa88c52e6896b94d0acf102.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="file">
+系统inode使用情况正常。
+②查看系统的限制情况：</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ulimit -n
+<span style="color:#ae81ff">81920</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>系统级别的打开文件数限制已经调整至81920，正常。
+③既然系统层面没有限制已经放开，那么会不会是Prometheus进程的限制呢，验证：</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pidof prometheus
+<span style="color:#ae81ff">17626</span>
+
+cat /proc/17624/limits
+
+Limit Soft Limit Hard Limit Units
+Max cpu time unlimited unlimited seconds
+Max file size unlimited unlimited bytes
+Max data size unlimited unlimited bytes
+Max stack size <span style="color:#ae81ff">8388608</span> unlimited bytes
+Max core file size <span style="color:#ae81ff">0</span> unlimited bytes
+Max resident set unlimited unlimited bytes
+Max processes <span style="color:#ae81ff">63472</span> <span style="color:#ae81ff">63472</span> processes
+Max open files <span style="color:#ae81ff">1024</span> <span style="color:#ae81ff">4096</span> files
+Max locked memory <span style="color:#ae81ff">65536</span> <span style="color:#ae81ff">65536</span> bytes
+Max address space unlimited unlimited bytes
+Max file locks unlimited unlimited locks
+Max pending signals <span style="color:#ae81ff">63472</span> <span style="color:#ae81ff">63472</span> signals
+Max msgqueue size <span style="color:#ae81ff">819200</span> <span style="color:#ae81ff">819200</span> bytes
+Max nice priority <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+Max realtime priority <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+Max realtime timeout unlimited unlimited us
+</code></pre></td></tr></table>
+</div>
+</div><p>查看进程的限制max open files的Soft和Hard分别为1024和4096，这就很奇怪了，系统明明已经放开了open file限制，为什么Prometheus进程还被限制在1024呢？
+思考之后想到Prometheus本来也有自己的监控接口，查下本身的监控数据，其中“process_max_fds”监控条目跟最大文件数相关，然后看到如下数据：</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># HELP process_max_fds Maximum number of open file descriptors.</span>
+<span style="color:#75715e"># TYPE process_max_fds gauge</span>
+process_max_fds <span style="color:#ae81ff">1024</span>
+<span style="color:#75715e"># HELP process_open_fds Number of open file descriptors.</span>
+<span style="color:#75715e"># TYPE process_open_fds gauge</span>
+process_open_fds <span style="color:#ae81ff">1022</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当前已经open了1022个，最大限制1024，再次验证了是进程的可用文件数限制过低导致。
+④那么问题来了？是什么原因导致的进程open file受限呢。答案可能只有一个：supervisor！因为我的Prometheus是用supervisor启动的。先验证一下，弃用守护进程，手动启动Prometheus服务看下，文件数限制是否放开；再次启动后，查看监控情况：
+<img src="http://i2.51cto.com/images/blog/201803/01/9a7da80b4a7338a751c3797434260db0.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="file"></p>
+<p>可见手动重启后限制已经放开。由此确定是supervisor引起的被守护进程文件数限制。</p>
+<h2 id="原因定位">原因定位</h2>
+<p>⑤定位到supervisor后，查看supervisor的启动参数，有没有类似文件描述符的限制字眼，在配置文件/etc/supervisord.conf中搜索关键字<strong>file、nf、fds</strong>等字眼:
+<img src="http://i2.51cto.com/images/blog/201803/01/a77588d42769591a734e20fdad2651fc.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="file">
+发现在supervisord的配置区域内有&quot;mindfs&quot;的配置，解释如下：“avail startup file descriptors;default 1024”。顺便查了下<a href="http://supervisord.org/configuration.html">官方文档</a>里的解释：</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">The minimum number of file descriptors that must be available before supervisord will start successfully. A call to setrlimit will be made to attempt to raise the soft and hard limits of the supervisord process to satisfy minfds. The hard limit may only be raised <span style="color:#66d9ef">if</span> supervisord is run as root. supervisord uses file descriptors liberally, and will enter a failure mode when one cannot be obtained from the OS, so it’s useful to be able to specify a minimum value to ensure it doesn’t run out of them during execution. These limits will be inherited by the managed subprocesses. This option is particularly useful on Solaris, which has a low per-process fd limit by default.
+</code></pre></td></tr></table>
+</div>
+</div><p>文档中指出，如果用root用户启动的supervisord，可以尝试增大此值。</p>
+<h2 id="问题修复">问题修复</h2>
+<p>⑥修复：增大supervisord的mindfs值至65535，之后再次用supervisor启动Prometheus。启动后监控恢复，能够正常抓取数据。再次查看进程的打开文件数限制，已调整至65535:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat /proc/17626/limits
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="http://i2.51cto.com/images/blog/201803/01/f5e780604e30acd3b9a9496b8c5b180b.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="file"></p>
+<h2 id="总结">总结</h2>
+<p>真正实践中问题的排查，可能没有文章中整理的那么简单，6步定位问题并恢复故障。实际可能会走许多弯路，在问题过后的整理归纳可以让梳理思路、积累经验，为下一次更快、更准确的定位问题埋下希望的种子。</p>
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="https://www.iyue.pub">xujpxm</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://www.iyue.pub/post/supervisor-with-prometheus/">https://www.iyue.pub/post/supervisor-with-prometheus/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/memFree-memAvailable/">Linux中MemFree与MemAvailable的区别</a></li>
+        
+        <li><a href="/post/linux-high-concurrency/">高并发下Linux系统及kernel参数优化</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+        <li><a href="/search/">搜索</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://www.iyue.pub/tags/Prometheus'>Prometheus</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "xujpxm/myblog"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://www.iyue.pub/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://www.iyue.pub">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://www.iyue.pub/post/nginx-log-with-response-body/" title="听说你的Nginx还不会记录Response Body?">听说你的Nginx还不会记录Response Body?</a>
+    </li>
+    
+    <li>
+        <a href="https://www.iyue.pub/post/nginx-cache/" title="Nginx缓存开启">Nginx缓存开启</a>
+    </li>
+    
+    <li>
+        <a href="https://www.iyue.pub/post/prometheus-fd-config/" title="Prometheus基于文件的服务发现">Prometheus基于文件的服务发现</a>
+    </li>
+    
+    <li>
+        <a href="https://www.iyue.pub/post/supervisor-with-prometheus/" title="Supervisord守护Prometheus遇到的坑">Supervisord守护Prometheus遇到的坑</a>
+    </li>
+    
+    <li>
+        <a href="https://www.iyue.pub/post/memFree-memAvailable/" title="Linux中MemFree与MemAvailable的区别">Linux中MemFree与MemAvailable的区别</a>
+    </li>
+    
+    <li>
+        <a href="https://www.iyue.pub/post/linux-high-concurrency/" title="高并发下Linux系统及kernel参数优化">高并发下Linux系统及kernel参数优化</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利派送</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="" title="广告位，虚位以待" target="_blank" style="color:red">
+                
+                    广告位，虚位以待
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://www.iyue.pub/categories/Linux/">Linux (2)</a></li>
+    
+    <li><a href="https://www.iyue.pub/categories/Service/">Service (2)</a></li>
+    
+    <li><a href="https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/">监控 (2)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://www.iyue.pub/tags/Memory/">Memory</a>
+    
+    <a href="https://www.iyue.pub/tags/Nginx/">Nginx</a>
+    
+    <a href="https://www.iyue.pub/tags/Prometheus/">Prometheus</a>
+    
+    <a href="https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/">内核</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.flysnow.org/" title="飞雪无情的博客">飞雪无情的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://www.iyue.pub/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://www.iyue.pub">IYue By xujpxm</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-119883712-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+</body>
+
+</html>

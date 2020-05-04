@@ -20,5 +20,15 @@
       <description>&lt;p&gt;相信大家都遇到过在排查线上问题或Debug的时候，在某一瞬间，特别想开启Nginx的Response Body日志，来帮助自己快速的定位问题；但找半天发现只有request_body/upstream_addr/upstream_response_time这些相近变量可用；这个时候不要慌&amp;hellip; 其实Nginx默认不开启Response Body的日志记录是有原因的，因为在Response Body过大，比如返回一个静态页面等内容时，不仅造成大量的资源占用，更会造成整个日志文件的可读性下降；但假如我们明确Response Body的格式，或想捕获Body里的关键字内容的时候，可以通过结合lua模块来实现这一需求。&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>Nginx缓存开启</title>
+      <link>https://www.iyue.pub/post/nginx-cache/</link>
+      <pubDate>Sun, 10 Jun 2018 17:08:09 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/nginx-cache/</guid>
+      <description>&lt;p&gt;众所周知，Nginx是一个高性能的web服务器，尤其在高并发和处理静态页面的时候有先天的优势；很大一部分得益于缓存的开启，那么如何开启nginx的缓存呢。&lt;/p&gt;
+&lt;p&gt;简单来说可以分两步：&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>

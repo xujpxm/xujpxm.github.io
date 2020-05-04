@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>内核 on IYue</title>
+    <link>https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/</link>
+    <description>Recent content in 内核 on IYue</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 24 May 2018 01:51:44 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>高并发下Linux系统及kernel参数优化</title>
+      <link>https://www.iyue.pub/post/linux-high-concurrency/</link>
+      <pubDate>Thu, 24 May 2018 01:51:44 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/linux-high-concurrency/</guid>
+      <description>&lt;p&gt;众所周知在默认参数情况下Linux对高并发支持并不好，主要受限于单进程最大打开文件数限制、内核TCP参数方面和IO事件分配机制等。下面就从几方面来调整使Linux系统能够支持高并发环境。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -30,6 +30,52 @@
     </item>
     
     <item>
+      <title>Nginx缓存开启</title>
+      <link>https://www.iyue.pub/post/nginx-cache/</link>
+      <pubDate>Sun, 10 Jun 2018 17:08:09 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/nginx-cache/</guid>
+      <description>&lt;p&gt;众所周知，Nginx是一个高性能的web服务器，尤其在高并发和处理静态页面的时候有先天的优势；很大一部分得益于缓存的开启，那么如何开启nginx的缓存呢。&lt;/p&gt;
+&lt;p&gt;简单来说可以分两步：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Prometheus基于文件的服务发现</title>
+      <link>https://www.iyue.pub/post/prometheus-fd-config/</link>
+      <pubDate>Sun, 10 Jun 2018 17:01:26 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/prometheus-fd-config/</guid>
+      <description>&lt;p&gt;Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Supervisord守护Prometheus遇到的坑</title>
+      <link>https://www.iyue.pub/post/supervisor-with-prometheus/</link>
+      <pubDate>Sun, 10 Jun 2018 16:37:18 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/supervisor-with-prometheus/</guid>
+      <description>&lt;p&gt;一直以来我采用supervisord来进行第三方服务的管理，百试不爽。所谓的第三方服务，我这里把不能通过yum或apt进行安装的，统统归拢为第三方；当然使用systemd来进行管理也很不错，不过在服务exit的时候需要自己写脚本来进行重启和重试操作。不例外的，Prometheus我还是采用了supervisord来进行启动管理，但是过完年后上班发现，我的prometheus无法收集targets的监控数据了，8百多个监控接口的数据丢了三天；排查后发现是由于supervisor引起的。于是整理出来，大家分享一下我的排查路线。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux中MemFree与MemAvailable的区别</title>
+      <link>https://www.iyue.pub/post/memFree-memAvailable/</link>
+      <pubDate>Sat, 26 May 2018 23:15:14 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/memFree-memAvailable/</guid>
+      <description>&lt;p&gt;最近在做Prometheus的监控，结合Grafana做前端展示，其中涉及到内存的时候，有不少人对Memory Free和Memory Avaliable这两个参数比较疑惑，这里结合linux下常用的查看内存使用情况的free命令，做下整理。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>高并发下Linux系统及kernel参数优化</title>
+      <link>https://www.iyue.pub/post/linux-high-concurrency/</link>
+      <pubDate>Thu, 24 May 2018 01:51:44 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/linux-high-concurrency/</guid>
+      <description>&lt;p&gt;众所周知在默认参数情况下Linux对高并发支持并不好，主要受限于单进程最大打开文件数限制、内核TCP参数方面和IO事件分配机制等。下面就从几方面来调整使Linux系统能够支持高并发环境。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>归档</title>
       <link>https://www.iyue.pub/archives/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

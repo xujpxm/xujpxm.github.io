@@ -6,20 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>归档 | IYue</title>
-    <meta property="og:title" content="归档 - IYue">
+    <title>监控 | IYue</title>
+    <meta property="og:title" content="监控 - IYue">
     <meta property="og:type" content="article">
         
         
     <meta name="Keywords" content="iyue,xujpxm,博客,运维开发,golang,python">
-    <meta name="description" content="爱月 - XUJPXM的博客">
+    <meta name="description" content="监控">
         
     <meta name="author" content="xujpxm">
-    <meta property="og:url" content="https://www.iyue.pub/archives/">
+    <meta property="og:url" content="https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml+xml" href="https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/index.xml" title="IYue" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -60,7 +61,7 @@
                     
                     <a  href="https://www.iyue.pub/tags/" title="标签">标签</a>
                     
-                    <a class="current" href="https://www.iyue.pub/archives/" title="归档">归档</a>
+                    <a  href="https://www.iyue.pub/archives/" title="归档">归档</a>
                     
                     <a  href="https://www.iyue.pub/about/" title="关于">关于</a>
                     
@@ -76,48 +77,68 @@
 
                 <div class="col-8" id="main">
                     
-<div class="post-archive">
+<div class="res-cons">
     
-    <h2>2020</h2>
-    <ul class="listing">
-        
-        <li>
-            <span class="date">2020/05/01</span>
-            <a href="https://www.iyue.pub/post/nginx-log-with-response-body/" title="听说你的Nginx还不会记录Response Body?">听说你的Nginx还不会记录Response Body?</a>
-        </li>
-        
-    </ul>
+    <h3 class="archive-title">
+        分类
+        <span class="keyword">监控</span>
+        中的文章
+    </h3>
     
-    <h2>2018</h2>
-    <ul class="listing">
-        
-        <li>
-            <span class="date">2018/06/10</span>
-            <a href="https://www.iyue.pub/post/nginx-cache/" title="Nginx缓存开启">Nginx缓存开启</a>
-        </li>
-        
-        <li>
-            <span class="date">2018/06/10</span>
-            <a href="https://www.iyue.pub/post/prometheus-fd-config/" title="Prometheus基于文件的服务发现">Prometheus基于文件的服务发现</a>
-        </li>
-        
-        <li>
-            <span class="date">2018/06/10</span>
-            <a href="https://www.iyue.pub/post/supervisor-with-prometheus/" title="Supervisord守护Prometheus遇到的坑">Supervisord守护Prometheus遇到的坑</a>
-        </li>
-        
-        <li>
-            <span class="date">2018/05/26</span>
-            <a href="https://www.iyue.pub/post/memFree-memAvailable/" title="Linux中MemFree与MemAvailable的区别">Linux中MemFree与MemAvailable的区别</a>
-        </li>
-        
-        <li>
-            <span class="date">2018/05/24</span>
-            <a href="https://www.iyue.pub/post/linux-high-concurrency/" title="高并发下Linux系统及kernel参数优化">高并发下Linux系统及kernel参数优化</a>
-        </li>
-        
-    </ul>
+
     
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://www.iyue.pub/post/prometheus-fd-config/">Prometheus基于文件的服务发现</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年6月10日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7'>监控</a>
+            
+        </div>
+        
+        <div class="post-content">
+            <p>Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。</p>……
+            <p class="readmore"><a href="https://www.iyue.pub/post/prometheus-fd-config/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://www.iyue.pub/post/supervisor-with-prometheus/">Supervisord守护Prometheus遇到的坑</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年6月10日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7'>监控</a>
+            
+        </div>
+        
+        <div class="post-content">
+            <p>一直以来我采用supervisord来进行第三方服务的管理，百试不爽。所谓的第三方服务，我这里把不能通过yum或apt进行安装的，统统归拢为第三方；当然使用systemd来进行管理也很不错，不过在服务exit的时候需要自己写脚本来进行重启和重试操作。不例外的，Prometheus我还是采用了supervisord来进行启动管理，但是过完年后上班发现，我的prometheus无法收集targets的监控数据了，8百多个监控接口的数据丢了三天；排查后发现是由于supervisor引起的。于是整理出来，大家分享一下我的排查路线。</p>……
+            <p class="readmore"><a href="https://www.iyue.pub/post/supervisor-with-prometheus/">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
 
 </div>
 
@@ -241,17 +262,6 @@
     </div>
 </footer>
 
-
-    
-    <script type="text/javascript">
-        window.MathJax = {
-            tex2jax: {
-                inlineMath: [['$', '$']],
-                processEscapes: true
-                }
-            };
-    </script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 
 
 <a id="rocket" href="#top"></a>
