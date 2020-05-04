@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on IYue</title>
-    <link>https://iyue.pub/categories/</link>
+    <link>https://www.iyue.pub/categories/</link>
     <description>Recent content in Categories on IYue</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Fri, 01 May 2020 10:24:29 +0800</lastBuildDate>
     
-	<atom:link href="https://iyue.pub/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.iyue.pub/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Service</title>
-      <link>https://iyue.pub/categories/Service/</link>
+      <link>https://www.iyue.pub/categories/Service/</link>
       <pubDate>Fri, 01 May 2020 10:24:29 +0800</pubDate>
       
-      <guid>https://iyue.pub/categories/Service/</guid>
+      <guid>https://www.iyue.pub/categories/Service/</guid>
       <description></description>
     </item>
     
