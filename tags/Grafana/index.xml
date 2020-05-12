@@ -17,7 +17,7 @@
       <pubDate>Tue, 12 May 2020 19:16:29 +0800</pubDate>
       
       <guid>https://www.iyue.pub/post/grafana-folder-permission/</guid>
-      <description>Grafana作为一款开源的度量分析与可视化套件，已经得到了大家的认可并被广泛使用，他可用于基础设施的时序监控数据展示，应用程序数据分析可视化，另外在包括气象、家庭自动化和过程控制等其他领域也使用广泛。Grafana支持Mysql、Elasticsearch、Prometheus</description>
+      <description>&lt;p&gt;Grafana作为一款开源的度量分析与可视化套件，已经得到了大家的认可并被广泛使用，他可用于基础设施的时序监控数据展示，应用程序数据分析可视化，另外在包括气象、家庭自动化和过程控制等其他领域也使用广泛。Grafana支持Mysql、Elasticsearch、Prometheus、InfluxDB等众多数据源，每个数据源都有一个特定的查询编辑器，可以根据自己的业务需要，撰写多种表达式，绘制多种数据展示图表。但有时你绘制的图表信息，如若涉及敏感信息，不想被所有人看到的时候，该怎么办呢？&lt;/p&gt;</description>
     </item>
     
   </channel>
