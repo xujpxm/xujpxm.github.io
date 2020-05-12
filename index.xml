@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Grafana为Dashboard添加独立权限控制</title>
+      <link>https://www.iyue.pub/post/grafana-folder-permission/</link>
+      <pubDate>Tue, 12 May 2020 19:16:29 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/grafana-folder-permission/</guid>
+      <description>Grafana作为一款开源的度量分析与可视化套件，已经得到了大家的认可并被广泛使用，他可用于基础设施的时序监控数据展示，应用程序数据分析可视化，另外在包括气象、家庭自动化和过程控制等其他领域也使用广泛。Grafana支持Mysql、Elasticsearch、Prometheus</description>
+    </item>
+    
+    <item>
       <title>听说你的Nginx还不会记录Response Body?</title>
       <link>https://www.iyue.pub/post/nginx-log-with-response-body/</link>
       <pubDate>Fri, 01 May 2020 10:24:29 +0800</pubDate>

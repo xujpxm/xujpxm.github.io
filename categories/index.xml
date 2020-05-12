@@ -6,10 +6,19 @@
     <description>Recent content in Categories on IYue</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 01 May 2020 10:24:29 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 12 May 2020 19:16:29 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>监控</title>
+      <link>https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/</link>
+      <pubDate>Tue, 12 May 2020 19:16:29 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Service</title>
@@ -17,15 +26,6 @@
       <pubDate>Fri, 01 May 2020 10:24:29 +0800</pubDate>
       
       <guid>https://www.iyue.pub/categories/Service/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>监控</title>
-      <link>https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/</link>
-      <pubDate>Sun, 10 Jun 2018 17:01:26 +0800</pubDate>
-      
-      <guid>https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/</guid>
       <description></description>
     </item>
     

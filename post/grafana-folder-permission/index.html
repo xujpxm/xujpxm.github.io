@@ -6,20 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Linux中MemFree与MemAvailable的区别 | IYue</title>
-    <meta property="og:title" content="Linux中MemFree与MemAvailable的区别 - IYue">
+    <title>Grafana为Dashboard添加独立权限控制 | IYue</title>
+    <meta property="og:title" content="Grafana为Dashboard添加独立权限控制 - IYue">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2018-05-26T23:15:14&#43;08:00'>
+    <meta property="article:published_time" content='2020-05-12T19:16:29&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2018-05-26T23:15:14&#43;08:00'>
+    <meta property="article:modified_time" content='2020-05-12T19:16:29&#43;08:00'>
         
     <meta name="Keywords" content="iyue,xujpxm,博客,运维开发,golang,python">
-    <meta name="description" content="Linux中MemFree与MemAvailable的区别">
+    <meta name="description" content="Grafana为Dashboard添加独立权限控制">
         
     <meta name="author" content="xujpxm">
-    <meta property="og:url" content="https://www.iyue.pub/post/memFree-memAvailable/">
+    <meta property="og:url" content="https://www.iyue.pub/post/grafana-folder-permission/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -147,13 +147,19 @@
     <div class="post-toc-content">
         <nav id="TableOfContents">
   <ul>
-    <li><a href="#内存查看">内存查看</a>
+    <li><a href="#权限概览">权限概览</a></li>
+    <li><a href="#dashboard和folder权限">Dashboard和Folder权限</a>
       <ul>
-        <li><a href="#名词解释">名词解释</a></li>
+        <li><a href="#添加team">添加Team</a></li>
+        <li><a href="#添加team-user">添加Team User</a>
+          <ul>
+            <li><a href="#为team配置dashboard权限">为Team配置Dashboard权限</a></li>
+          </ul>
+        </li>
+        <li><a href="#权限级别">权限级别</a></li>
       </ul>
     </li>
-    <li><a href="#buffer与cache的基本区别">Buffer与Cache的基本区别</a></li>
-    <li><a href="#计算公式">计算公式</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
   </ul>
 </nav>
     </div>
@@ -187,16 +193,16 @@
 </script>
     <article class="post">
         <header>
-            <h1 class="post-title">Linux中MemFree与MemAvailable的区别</h1>
+            <h1 class="post-title">Grafana为Dashboard添加独立权限控制</h1>
         </header>
         <date class="post-meta meta-date">
-            2018年5月26日
+            2020年5月12日
         </date>
         
         <div class="post-meta">
             <span>|</span>
             
-            <span class="meta-category"><a href='https://www.iyue.pub/categories/Linux'>Linux</a></span>
+            <span class="meta-category"><a href='https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7'>监控</a></span>
             
         </div>
         
@@ -209,77 +215,52 @@
         </div>
         
         <div class="post-content">
-            <p>最近在做Prometheus的监控，结合Grafana做前端展示，其中涉及到内存的时候，有不少人对Memory Free和Memory Avaliable这两个参数比较疑惑，这里结合linux下常用的查看内存使用情况的free命令，做下整理。</p>
-<h2 id="内存查看">内存查看</h2>
-<p>Linux查看内存使用情况，可以查看/proc/meminfo和使用free命令：</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat /proc/meminfo
-MemTotal:       <span style="color:#ae81ff">16432140</span> kB
-MemFree:        <span style="color:#ae81ff">13402768</span> kB
-MemAvailable:   <span style="color:#ae81ff">15619672</span> kB
-Buffers:          <span style="color:#ae81ff">397388</span> kB
-Cached:          <span style="color:#ae81ff">1997344</span> kB
-SwapCached:            <span style="color:#ae81ff">0</span> kB
-Active:          <span style="color:#ae81ff">1855288</span> kB
-...
+            <p>Grafana作为一款开源的度量分析与可视化套件，已经得到了大家的认可并被广泛使用，他可用于基础设施的时序监控数据展示，应用程序数据分析可视化，另外在包括气象、家庭自动化和过程控制等其他领域也使用广泛。Grafana支持Mysql、Elasticsearch、Prometheus、InfluxDB等众多数据源，每个数据源都有一个特定的查询编辑器，可以根据自己的业务需要，撰写多种表达式，绘制多种数据展示图表。但有时你绘制的图表信息，如若涉及敏感信息，不想被所有人看到的时候，该怎么办呢？</p>
+<!-- raw HTML omitted -->
+<h2 id="权限概览">权限概览</h2>
+<p>假如你的Grafana接入了登陆控制，无论是采用Grafana自带的权限控制，还是启用了Ldap认证，默认情况下Dashboard对所有人的权限都是可读的；总结Grafana的用户权限受以下几方面因素影响：</p>
+<ul>
+<li><code>Organization Role</code> (Admin, Editor, Viewer)；即全局组织角色</li>
+<li>Via <code>Team</code> memberships where the Team has been assigned specific permissions. 即小组权限</li>
+<li>Via permissions assigned directly to user (on <code>folders</code>, <code>dashboards</code>, <code>data sources</code>). 即针对Folder、Dashboard、Data Source特意为某用户分配的权限</li>
+<li>The Grafana Admin (i.e. Super Admin) user flag. 超级管理员权限</li>
+</ul>
+<p>为单个Dashboard配置独立权限控制，可在&quot;Dashboard settings&rdquo;&ndash;&gt; &ldquo;Permissions&rdquo;&ndash;&gt;“Add Permission”，为某用户或小组添加权限；同时Dashboard的权限是继承自所在<strong>Folder</strong>的权限，所以你会看到部分已有权限后面有一个小锁的标志，代表权限不能修改，如若修改，只能通过修改对应Folder的权限；也就是说，<strong>所谓Grafana Dashboard的权限控制，即Folder(文件夹)的权限控制</strong>；
+<img src="https://graph.baidu.com/resource/222aa953d5a5189a924c001589174078.png" alt="dashboardPerm"></p>
+<h2 id="dashboard和folder权限">Dashboard和Folder权限</h2>
+<p>为某个Dashboard添加权限控制的操作示例
+<img src="https://graph.baidu.com/resource/22200f3d0d02a5b45996b01589127489.png" alt="folderPerm"></p>
+<p>如上图所示，在<code>Folder</code>的<code>Manage</code>配置项中，可以在这里删除此文件夹的默认角色，然后针对某个用户或小组自定义权限；</p>
+<h3 id="添加team">添加Team</h3>
+<p><code>Configuration</code>-&gt;  <code>Teams</code>&ndash;&gt; <code>Add Team</code>，输入Team名称，即可创建一个新Team；这里我创建了一个名为：“TestReadOnly”的新Team；
+<img src="https://graph.baidu.com/resource/2222c15705a2ce2df951101589279993.png" alt="AddTeam"></p>
+<h3 id="添加team-user">添加Team User</h3>
+<p>鼠标点击刚才创建好的Team，<code>Team Members</code>处<code>Add member</code>可添加用户到此Team中：
+<img src="https://graph.baidu.com/resource/2223b575a0bad959ff68101589280785.png" alt="addTeamUser"></p>
+<h4 id="为team配置dashboard权限">为Team配置Dashboard权限</h4>
+<p>找到<code>Dashboard settings</code>或文件夹管理，找到<code>Permissions</code>配置，<code>Add Permission</code>添加权限，给‘“TestReadOnly”组添加“View”的权限，其他权限删除；这样配置后，<strong>&ldquo;TestReadyOnly&quot;组中的用户将具有只读权限，而不在此组中的用户则无权限访问</strong>(超级管理员用户的权限不可删除)；配置&quot;Edit&quot;等权限的方法与此类似。
+<img src="https://graph.baidu.com/resource/222346dfd8347180e311e01589280332.png" alt="DSPerm"></p>
+<h3 id="权限级别">权限级别</h3>
+<p>Grafana的权限级别主要有三种：<strong>Admin</strong> &gt; <strong>Edit</strong> &gt; <strong>View</strong></p>
+<p><strong>注意事项:</strong>:</p>
+<ol>
+<li>不能覆盖具有<code>组织管理员</code>角色的用户权限</li>
+<li>如果存在具有较高权限级别的规规存在，则低权限级别的权限规则将不生效</li>
+</ol>
+<p>比如，这里存在一个文件夹FolderX，如果该文件夹对所有人只读且不可编辑，那么你可以定义一个只读Team，假设名为&quot;ReadOnly&rdquo;；你已经将包括“xujpxm”在内的几个用户添加到“ReadOnly”组中；这时你将&quot;ReadOnly&rdquo; Team赋予FolderX文件夹“View”权限，同时删除了“Edit”/&ldquo;Admin&quot;权限；那么这时在“ReadOnly” Team里的用户将对FolderX文件夹只可读，不可编辑；正常情况下到这一步针对单个文件夹的权限控制已经达到。但需要注意的是，假设“xujpxm”用户也具有管理员权限，权限级别高于“View”，根据<code>注意事项</code>1，所以&quot;xujpxm&quot;用户对“FolderX“”文件夹还是可编辑和管理的；第二种情况，假如还有一个“EditGroup” Team，FolderX赋予了其“Edit”权限，但同时用户“xujpxm”(非超级管理员用户)也在其中，那么这时该用户对此文件夹同时有“Edit”和“View”权限，根据<code>注意事项2</code>，&ldquo;xujpxm&quot;用户对此文件夹拥有的是应该“Edit”权限。</p>
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li><a href="https://grafana.com/docs/grafana/latest/permissions/dashboard_folder_permissions/">Grafana Dashboard and Folder Permissions</a></li>
+<li><a href="https://grafana.com/docs/grafana/latest/permissions/overview/#permissions-overview">Grafana Permissions Overview</a></li>
+</ul>
 
-<span style="color:#75715e"># free命令</span>
-free -m
-             total       used       free     shared    buffers     cached
-Mem:         <span style="color:#ae81ff">16047</span>       <span style="color:#ae81ff">2958</span>      <span style="color:#ae81ff">13088</span>          <span style="color:#ae81ff">0</span>        <span style="color:#ae81ff">388</span>       <span style="color:#ae81ff">1950</span>
--/+ buffers/cache:        <span style="color:#ae81ff">620</span>      <span style="color:#ae81ff">15427</span>
-Swap:         <span style="color:#ae81ff">8191</span>          <span style="color:#ae81ff">0</span>       <span style="color:#ae81ff">8191</span>
-
-</code></pre></td></tr></table>
-</div>
-</div><p>从结果来看，/proc/meminfo里的MemTotal、MemFree、Buffers、Cached是能够分别和free输出结果的“Mem”行一一对应的。</p>
-<h3 id="名词解释">名词解释</h3>
-<p>这里先解释下几个关键词：</p>
-<p>1、<strong>MemTotal</strong>：内存总数</p>
-<p>系统从加电开始到引导完成，BIOS等要保留一些内存，内核要保留一些内存，最后剩下可供系统支配的内存就是MemTotal。这个值在系统运行期间一般是固定不变的。</p>
-<p>2、<strong>MemFree</strong>：空闲内存数</p>
-<p>表示系统尚未使用的内存。MemUsed=MemTotal-MemFree就是已被用掉的内存。</p>
-<p>3、<strong>MemAvailable</strong>：可用内存数</p>
-<p>应用程序可用内存数。系统中有些内存虽然已被使用但是可以回收的，比如cache/buffer、slab都有一部分可以回收，所以MemFree不能代表全部可用的内存，这部分可回收的内存加上MemFree才是系统可用的内存，即：MemAvailable≈MemFree+Buffers+Cached，它是内核使用特定的算法计算出来的，是一个估计值。它与MemFree的关键区别点在于，MemFree是说的系统层面，MemAvailable是说的应用程序层面。</p>
-<p>4、<strong>Buffer</strong>：缓冲区内存数</p>
-<p>5、<strong>Cache</strong>：缓存区内存数</p>
-<p>6、<strong>Shared</strong>：多个进程共享的内存空间,不常用，暂不讨论。</p>
-<h2 id="buffer与cache的基本区别">Buffer与Cache的基本区别</h2>
-<p>这里说下buffer与cache的区别,首先，从字面意义上讲,buffer是缓冲的意思，cache是缓存的意思。举个现实中的例子，比说铁道头上像弹簧一样的东西，就叫缓冲；部署在森林里的存应急物资的保管箱，名叫“Food Cache”,类似一种保存箱。 其次，常见的说法，叫write-buffer和read-cache，buffer一般用作写操作上，cache一般用在读操作上，不过也不是一成不变的； 举例说明，每秒要写100次硬盘，对系统冲击很大，浪费了大量时间在忙着处理开始写和结束写这两件事嘛。用buffer暂存起来，变成每10秒写一次硬盘，对系统的冲击就很小，写入效率高了；Cache 是为了弥补高速设备和低速设备的鸿沟而引入的中间层，最终起到加快取速度的作用。比如你一个很复杂的计算做完了，下次还要用结果，就把结果放手边一个好拿的地方存着，下次不用再算了，加快了数据取用的速度。（可以参考知乎上的回答：<a href="https://www.zhihu.com/question/26190832">https://www.zhihu.com/question/26190832</a>）</p>
-<h2 id="计算公式">计算公式</h2>
-<p>参照上面free的输出结果，这里有几个计算公式：</p>
-<p>为了直观说明，把第2行，Mem的行我这里称作OS Mem,第三行 buffers/cache行，称作APP buffer/cache：</p>
-<p><strong>OS Mem total</strong> = OS Mem used + OS Mem free</p>
-<p><strong>APP buffers/cache used</strong> = OS Mem used - OS Mem buffers - OS Mem cached</p>
-<p><strong>APP buffers/cache free</strong> = OS Mem free + OS Mem buffers + OS Mem cached</p>
-<p><strong>APP buffers/cache total</strong> = APP buffers/cache used + APP buffers/cache free = OS Mem total</p>
         </div>
 
         
 <div class="post-archive">
     <ul class="post-copyright">
         <li><strong>原文作者：</strong><a rel="author" href="https://www.iyue.pub">xujpxm</a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://www.iyue.pub/post/memFree-memAvailable/">https://www.iyue.pub/post/memFree-memAvailable/</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://www.iyue.pub/post/grafana-folder-permission/">https://www.iyue.pub/post/grafana-folder-permission/</a></li>
         <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
     </ul>
 </div>
@@ -293,11 +274,15 @@ Swap:         <span style="color:#ae81ff">8191</span>          <span style="colo
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/linux-high-concurrency/">高并发下Linux系统及kernel参数优化</a></li>
+        <li><a href="/post/nginx-log-with-response-body/">听说你的Nginx还不会记录Response Body?</a></li>
         
-        <li><a href="/archives/">归档</a></li>
+        <li><a href="/about/">About</a></li>
         
-        <li><a href="/search/">搜索</a></li>
+        <li><a href="/post/nginx-cache/">Nginx缓存开启</a></li>
+        
+        <li><a href="/post/prometheus-fd-config/">Prometheus基于文件的服务发现</a></li>
+        
+        <li><a href="/post/supervisor-with-prometheus/">Supervisord守护Prometheus遇到的坑</a></li>
         
     </ul>
 </div>
@@ -307,7 +292,7 @@ Swap:         <span style="color:#ae81ff">8191</span>          <span style="colo
             
             <ul class="clearfix">
                 
-                <li><a href='https://www.iyue.pub/tags/Memory'>Memory</a></li>
+                <li><a href='https://www.iyue.pub/tags/Grafana'>Grafana</a></li>
                 
             </ul>
             
