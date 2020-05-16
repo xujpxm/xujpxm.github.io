@@ -1,113 +1,156 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<?xml-stylesheet type="text/xsl" href="https://www.iyue.pub/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
     <loc>https://www.iyue.pub/categories/</loc>
     <lastmod>2020-05-12T19:16:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/tags/Grafana/</loc>
+    <loc>https://www.iyue.pub/tags/grafana/</loc>
     <lastmod>2020-05-12T19:16:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/grafana-folder-permission/</loc>
     <lastmod>2020-05-12T19:16:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/</loc>
     <lastmod>2020-05-12T19:16:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/tags/</loc>
     <lastmod>2020-05-12T19:16:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/</loc>
     <lastmod>2020-05-12T19:16:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/tags/Nginx/</loc>
+    <loc>https://www.iyue.pub/tags/nginx/</loc>
     <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/categories/Service/</loc>
+    <loc>https://www.iyue.pub/categories/service/</loc>
     <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/nginx-log-with-response-body/</loc>
     <lastmod>2020-05-01T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/about/</loc>
     <lastmod>2020-04-21T16:59:51+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/</loc>
     <lastmod>2020-04-21T16:59:51+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/nginx-cache/</loc>
     <lastmod>2018-06-10T17:08:09+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/tags/Prometheus/</loc>
+    <loc>https://www.iyue.pub/tags/prometheus/</loc>
     <lastmod>2018-06-10T17:01:26+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/prometheus-fd-config/</loc>
     <lastmod>2018-06-10T17:01:26+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/supervisor-with-prometheus/</loc>
     <lastmod>2018-06-10T16:37:18+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/categories/Linux/</loc>
+    <loc>https://www.iyue.pub/categories/linux/</loc>
     <lastmod>2018-05-26T23:15:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/post/memFree-memAvailable/</loc>
+    <loc>https://www.iyue.pub/post/memfree-memavailable/</loc>
     <lastmod>2018-05-26T23:15:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/tags/Memory/</loc>
+    <loc>https://www.iyue.pub/tags/memory/</loc>
     <lastmod>2018-05-26T23:15:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/</loc>
     <lastmod>2018-05-24T01:51:44+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/linux-high-concurrency/</loc>
     <lastmod>2018-05-24T01:51:44+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/archives/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/search/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
 </urlset>

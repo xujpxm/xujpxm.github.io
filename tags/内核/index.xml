@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>内核 on IYue</title>
+    <title>内核 on IYue 爱月 | XUJPXM的博客</title>
     <link>https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/</link>
-    <description>Recent content in 内核 on IYue</description>
+    <description>Recent content in 内核 on IYue 爱月 | XUJPXM的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
+    <copyright>xujpxm</copyright>
     <lastBuildDate>Thu, 24 May 2018 01:51:44 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/index.xml" rel="self" type="application/rss+xml" />

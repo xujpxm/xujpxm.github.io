@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Linux on IYue</title>
-    <link>https://www.iyue.pub/categories/Linux/</link>
-    <description>Recent content in Linux on IYue</description>
+    <title>Linux on IYue 爱月 | XUJPXM的博客</title>
+    <link>https://www.iyue.pub/categories/linux/</link>
+    <description>Recent content in Linux on IYue 爱月 | XUJPXM的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
+    <copyright>xujpxm</copyright>
     <lastBuildDate>Sat, 26 May 2018 23:15:14 +0800</lastBuildDate>
     
-	<atom:link href="https://www.iyue.pub/categories/Linux/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.iyue.pub/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Linux中MemFree与MemAvailable的区别</title>
-      <link>https://www.iyue.pub/post/memFree-memAvailable/</link>
+      <link>https://www.iyue.pub/post/memfree-memavailable/</link>
       <pubDate>Sat, 26 May 2018 23:15:14 +0800</pubDate>
       
-      <guid>https://www.iyue.pub/post/memFree-memAvailable/</guid>
+      <guid>https://www.iyue.pub/post/memfree-memavailable/</guid>
       <description>&lt;p&gt;最近在做Prometheus的监控，结合Grafana做前端展示，其中涉及到内存的时候，有不少人对Memory Free和Memory Avaliable这两个参数比较疑惑，这里结合linux下常用的查看内存使用情况的free命令，做下整理。&lt;/p&gt;</description>
     </item>
     

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on IYue</title>
+    <title>Tags on IYue 爱月 | XUJPXM的博客</title>
     <link>https://www.iyue.pub/tags/</link>
-    <description>Recent content in Tags on IYue</description>
+    <description>Recent content in Tags on IYue 爱月 | XUJPXM的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
+    <copyright>xujpxm</copyright>
     <lastBuildDate>Tue, 12 May 2020 19:16:29 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/tags/index.xml" rel="self" type="application/rss+xml" />
@@ -13,37 +14,37 @@
     
     <item>
       <title>Grafana</title>
-      <link>https://www.iyue.pub/tags/Grafana/</link>
+      <link>https://www.iyue.pub/tags/grafana/</link>
       <pubDate>Tue, 12 May 2020 19:16:29 +0800</pubDate>
       
-      <guid>https://www.iyue.pub/tags/Grafana/</guid>
+      <guid>https://www.iyue.pub/tags/grafana/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Nginx</title>
-      <link>https://www.iyue.pub/tags/Nginx/</link>
+      <link>https://www.iyue.pub/tags/nginx/</link>
       <pubDate>Fri, 01 May 2020 10:24:29 +0800</pubDate>
       
-      <guid>https://www.iyue.pub/tags/Nginx/</guid>
+      <guid>https://www.iyue.pub/tags/nginx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Prometheus</title>
-      <link>https://www.iyue.pub/tags/Prometheus/</link>
+      <link>https://www.iyue.pub/tags/prometheus/</link>
       <pubDate>Sun, 10 Jun 2018 17:01:26 +0800</pubDate>
       
-      <guid>https://www.iyue.pub/tags/Prometheus/</guid>
+      <guid>https://www.iyue.pub/tags/prometheus/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Memory</title>
-      <link>https://www.iyue.pub/tags/Memory/</link>
+      <link>https://www.iyue.pub/tags/memory/</link>
       <pubDate>Sat, 26 May 2018 23:15:14 +0800</pubDate>
       
-      <guid>https://www.iyue.pub/tags/Memory/</guid>
+      <guid>https://www.iyue.pub/tags/memory/</guid>
       <description></description>
     </item>
     

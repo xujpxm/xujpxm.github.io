@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>IYue</title>
+    <title>IYue 爱月 | XUJPXM的博客</title>
     <link>https://www.iyue.pub/</link>
-    <description>Recent content on IYue</description>
+    <description>Recent content on IYue 爱月 | XUJPXM的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
+    <copyright>xujpxm</copyright>
     <lastBuildDate>Tue, 21 Apr 2020 16:59:51 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/index.xml" rel="self" type="application/rss+xml" />
@@ -35,7 +36,7 @@
       <pubDate>Tue, 21 Apr 2020 16:59:51 +0800</pubDate>
       
       <guid>https://www.iyue.pub/about/</guid>
-      <description>关于本站 本站名为IYue，意为“爱月”。采用hugo驱动，主题为Maupassant。自己从14年开始写博客，之前都是发表在51CTO、微信公众号、今日头条等平台上，后来手里囤了几个域名，本着不浪费资源的原则，于是诞生了本站。 关于我 xujpxm，习惯用双拼+自然码打字。大学在呼啸</description>
+      <description>关于本站 本站名为IYue，意为“爱月”；采用hugo驱动，主题为Even。主要用来记录工作和学习中的技术积累与思想沉淀，同时希望本站的内容能</description>
     </item>
     
     <item>
@@ -68,10 +69,10 @@
     
     <item>
       <title>Linux中MemFree与MemAvailable的区别</title>
-      <link>https://www.iyue.pub/post/memFree-memAvailable/</link>
+      <link>https://www.iyue.pub/post/memfree-memavailable/</link>
       <pubDate>Sat, 26 May 2018 23:15:14 +0800</pubDate>
       
-      <guid>https://www.iyue.pub/post/memFree-memAvailable/</guid>
+      <guid>https://www.iyue.pub/post/memfree-memavailable/</guid>
       <description>&lt;p&gt;最近在做Prometheus的监控，结合Grafana做前端展示，其中涉及到内存的时候，有不少人对Memory Free和Memory Avaliable这两个参数比较疑惑，这里结合linux下常用的查看内存使用情况的free命令，做下整理。&lt;/p&gt;</description>
     </item>
     

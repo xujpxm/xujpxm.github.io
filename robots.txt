@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://blog.iyue.pub/sitemap.xml
+Sitemap: https://www.iyue.pub/sitemap.xml

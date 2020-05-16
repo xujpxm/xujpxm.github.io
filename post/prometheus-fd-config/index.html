@@ -1,275 +1,230 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Prometheus基于文件的服务发现 - IYue 爱月 | XUJPXM的博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Prometheus基于文件的服务发现 | IYue</title>
-    <meta property="og:title" content="Prometheus基于文件的服务发现 - IYue">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content='2018-06-10T17:01:26&#43;08:00'>
-        
-        
-    <meta property="article:modified_time" content='2018-06-10T17:01:26&#43;08:00'>
-        
-    <meta name="Keywords" content="iyue,xujpxm,博客,运维开发,golang,python">
-    <meta name="description" content="Prometheus基于文件的服务发现">
-        
-    <meta name="author" content="xujpxm">
-    <meta property="og:url" content="https://www.iyue.pub/post/prometheus-fd-config/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-2770385078098302",
-        enable_page_level_ads: true
-    });
-    </script>
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
-        <link rel="stylesheet" href='/css/my_toc_style.css'>
-    
+<meta name="author"
+    content="xujpxm" /><meta name="description" content="Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。
+" /><meta name="keywords"
+    content="Hugo, even, iyue, xujpxm, DevOps" />
+
+
+
+
+
+
+<script data-ad-client="ca-pub-2770385078098302" async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+<meta name="generator" content="Hugo 0.69.0 with theme even" />
+
+
+<link rel="canonical" href="https://www.iyue.pub/post/prometheus-fd-config/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Prometheus基于文件的服务发现" />
+<meta property="og:description" content="Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.iyue.pub/post/prometheus-fd-config/" />
+<meta property="article:published_time" content="2018-06-10T17:01:26+08:00" />
+<meta property="article:modified_time" content="2018-06-10T17:01:26+08:00" />
+<meta itemprop="name" content="Prometheus基于文件的服务发现">
+<meta itemprop="description" content="Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。">
+<meta itemprop="datePublished" content="2018-06-10T17:01:26&#43;08:00" />
+<meta itemprop="dateModified" content="2018-06-10T17:01:26&#43;08:00" />
+<meta itemprop="wordCount" content="3634">
+
+
+
+<meta itemprop="keywords" content="Prometheus," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Prometheus基于文件的服务发现"/>
+<meta name="twitter:description" content="Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
 </head>
-
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://www.iyue.pub">
-                        IYue
-                    </a>
-                
-                <p class="description">爱月 - XUJPXM的博客</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://www.iyue.pub">首页</a>
-                    
-                    <a  href="https://www.iyue.pub/categories/" title="分类">分类</a>
-                    
-                    <a  href="https://www.iyue.pub/tags/" title="标签">标签</a>
-                    
-                    <a  href="https://www.iyue.pub/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://www.iyue.pub/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
+  <div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">IYue</a>
     </div>
-</header>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item">首页</li>
+        </a><a href="/categories/">
+            <li class="mobile-menu-item">分类</li>
+        </a><a href="/tags/">
+            <li class="mobile-menu-item">标签</li>
+        </a><a href="/post/">
+            <li class="mobile-menu-item">归档</li>
+        </a><a href="/about/">
+            <li class="mobile-menu-item">关于</li>
+        </a>
+    </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">IYue</a>
+</div>
 
-    <div id="body">
-        <div class="container">
-            <div class="col-group">
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 200px;
-        margin-left: -210px;
-        padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
-        font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Prometheus基于文件的服务发现</h1>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 20px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2018-06-10 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%9B%91%E6%8E%A7/"> 监控 </a>
+            </div>
+          <span class="more-meta"> 约 3634 字 </span>
+          <span class="more-meta"> 预计阅读 8 分钟 </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ul>
     <li><a href="#配置">配置</a></li>
     <li><a href="#结合服务发现实现文件的动态更新">结合服务发现实现文件的动态更新</a></li>
   </ul>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if(leftPos<220){
-                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
-            }
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Prometheus基于文件的服务发现</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年6月10日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7'>监控</a></span>
-            
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <p>Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。</p>
+    <div class="post-content">
+      <p>Prometheus是一套开源的监控、报警解决方案，是由SoundCloud公司开发的，从 2012 年开始编写代码，再到 2015 年 开源以来，该项目有非常活跃的社区和开发人员，目前在全世界最大的男性交友社区上已经有了1.1w多star；2016 年 Prometheus 成为继 k8s 后，成为第二名 CNCF(Cloud Native Computing Foundation) 成员。</p>
 <p>Google SRE的书内也曾提到跟他们BorgMon监控系统相似的开源实现是Prometheus，作为新一代开源解决方案，很多理念与 Google SRE 运维之道不谋而合。作为新一代的监控解决方案，现在最常见的用法是与Kubernetes容器管理系统进行结合进行监控，但不要误解为它仅仅是一个容器的监控，当你深入了解他之后，你会发现他能做很多事情。</p>
 <p>这里我想多说一下，之前一直纠结于选择Prometheus还是Open-falcon。这两者都是非常棒的新一代监控解决方案，后者是小米公司开源的，目前包括小米、金山云、美团、京东金融、赶集网等都在使用Open-Falcon，最大区别在于前者采用的是pull的方式获取数据，后者使用push的方式，暂且不说这两种方式的优缺点。简单说下我喜欢Prometheus的原因，大概有5点吧，1、开箱即用，部署运维非常方便 2、prometheus的社区非常活跃 3、自带服务发现功能 4、简单的文本存储格式，进行二次开发非常方便。 5、最重要的一点，他的报警插件我非常喜欢，带有分组、报警抑制、静默提醒机制。这里并没有贬低open-falcon的意思，还是那句老话适合自己的才是最好的。</p>
 <p>Consul-template自动刷新配置文件</p>
 <p>由于Prometheus是“拉”的方式主动监测，所以需要在server端指定被监控节点的列表。当被监控的节点增多之后，每次增加节点都需要更改配置文件，非常麻烦，我这里用consul-template+consul动态生成配置文件，这种方式同样适用于其他需要频繁更改配置文件的服务。另外一种解决方案是etcd+confd，基本现在主流的动态配置系统分这两大阵营。consul-template的定位和confd差不多，不过它是consul自家推出的模板系统。</p>
 <h2 id="配置">配置</h2>
 <p>先看下Prometheus的配置文件样例：</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">- job_name: <span style="color:#e6db74">&#39;node-exporter&#39;</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">- job_name: <span class="s1">&#39;node-exporter&#39;</span>
 static_configs:
-- targets: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;172.30.100.10:9100&#39;</span><span style="color:#f92672">]</span>
+- targets: <span class="o">[</span><span class="s1">&#39;172.30.100.10:9100&#39;</span><span class="o">]</span>
 labels:
-hostname: <span style="color:#e6db74">&#39;web1&#39;</span>
-- targets: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;172.30.100.11:9100&#39;</span><span style="color:#f92672">]</span>
+hostname: <span class="s1">&#39;web1&#39;</span>
+- targets: <span class="o">[</span><span class="s1">&#39;172.30.100.11:9100&#39;</span><span class="o">]</span>
 labels:
-hostname: <span style="color:#e6db74">&#39;web2&#39;</span>
-- targets: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;172.30.100.12:9100&#39;</span><span style="color:#f92672">]</span>
+hostname: <span class="s1">&#39;web2&#39;</span>
+- targets: <span class="o">[</span><span class="s1">&#39;172.30.100.12:9100&#39;</span><span class="o">]</span>
 labels:
-hostname: <span style="color:#e6db74">&#39;web3&#39;</span>
+hostname: <span class="s1">&#39;web3&#39;</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>每次新加监控节点的时候，只需要添加一个新的targets即可，“hostname”是我自定义的一个label标签，方便区分。那么这里就产生一个问题，当targets的数量达到几百上千之后，配置文件看起来就会特别冗余。所以有经验的运维人就会想到用include的方式，把其他的配置文件包含进来，这样就把一个大而冗余的主配置文件，切分成一个个小的配置文件。Prometheus这里用的方法就是基于文件的服务发现&ndash;<strong>&ldquo;file_sd_config&rdquo;</strong>。我这里在prometheus下面新建了一个conf.d的目录，包含两个子配置文件，分别监控linux和windows的机器;</p>
 <p>file_sd_config参考样例:</p>
 <p>子配置文件可以是YAML或JSON格式，我这里用的JSON格式，示例如下：</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat conf.d/lnode-discovery.json
-<span style="color:#f92672">[</span>
-<span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;targets&#34;</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;172.30.100.2:9100&#34;</span><span style="color:#f92672">]</span>,
-<span style="color:#e6db74">&#34;labels&#34;</span>: <span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;consul02&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>,
-<span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;targets&#34;</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;172.30.100.1:9100&#34;</span><span style="color:#f92672">]</span>,
-<span style="color:#e6db74">&#34;labels&#34;</span>: <span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;consul01&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">]</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">cat conf.d/lnode-discovery.json
+<span class="o">[</span>
+<span class="o">{</span>
+<span class="s2">&#34;targets&#34;</span>: <span class="o">[</span><span class="s2">&#34;172.30.100.2:9100&#34;</span><span class="o">]</span>,
+<span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
+<span class="s2">&#34;hostname&#34;</span>: <span class="s2">&#34;consul02&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>,
+<span class="o">{</span>
+<span class="s2">&#34;targets&#34;</span>: <span class="o">[</span><span class="s2">&#34;172.30.100.1:9100&#34;</span><span class="o">]</span>,
+<span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
+<span class="s2">&#34;hostname&#34;</span>: <span class="s2">&#34;consul01&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>
+<span class="o">]</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="结合服务发现实现文件的动态更新">结合服务发现实现文件的动态更新</h2>
@@ -278,20 +233,20 @@ hostname: <span style="color:#e6db74">&#39;web3&#39;</span>
 <li>下载consul-template</li>
 </ol>
 <p>在https://releases.hashicorp.com/consul-template/这里找到你所需要操作系统版本，下载之后并解压：</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e">#软件安装目录</span>
-cd /data/consul_template 
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#软件安装目录</span>
+<span class="nb">cd</span> /data/consul_template 
 wget -c https://releases.hashicorp.com/consul-template/0.19.3/consul-template_0.19.3_linux_amd64.zip
 unzip consul-template_0.19.2_linux_amd64.zip
-mkdir templates <span style="color:#75715e"># 创建consul-template的模板文件目录</span>
+mkdir templates <span class="c1"># 创建consul-template的模板文件目录</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>consul-template继承了consul的简约风格，解压之后只有一个二进制软件包。我们创建一个存放模板文件的目录，方便以后使用。</p>
@@ -299,166 +254,166 @@ mkdir templates <span style="color:#75715e"># 创建consul-template的模板文�
 <li>创建consul-template的配置文件</li>
 </ol>
 <p>配置文件的格式遵循：HashiCorp Configuration Language。我的配置文件示例如下：</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat consul-template.conf
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">cat consul-template.conf
 
-log_level <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;warn&#34;</span>
-syslog <span style="color:#f92672">{</span>
-<span style="color:#75715e"># This enables syslog logging.</span>
-enabled <span style="color:#f92672">=</span> true
-<span style="color:#75715e"># This is the name of the syslog facility to log to.</span>
-facility <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;LOCAL5&#34;</span>
-<span style="color:#f92672">}</span>
-consul <span style="color:#f92672">{</span>
-<span style="color:#75715e"># auth {</span>
-<span style="color:#75715e"># enabled = true</span>
-<span style="color:#75715e"># username = &#34;test&#34;</span>
-<span style="color:#75715e"># password = &#34;test&#34;</span>
-<span style="color:#75715e"># }</span>
-address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;172.30.100.45:8500&#34;</span>
-<span style="color:#75715e"># token = &#34;abcd1234&#34;</span>
-retry <span style="color:#f92672">{</span>
-enabled <span style="color:#f92672">=</span> true
-attempts <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span>
-backoff <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;250ms&#34;</span>
-<span style="color:#75715e"># If max_backoff is set to 10s and backoff is set to 1s, sleep times</span>
-<span style="color:#75715e"># would be: 1s, 2s, 4s, 8s, 10s, 10s, ...</span>
-max_backoff <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;3m&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e"># This block defines the configuration for a template. Unlike other block</span>
-<span style="color:#75715e"># this block may be specified multiple times to configure multiple templates.</span>
-template <span style="color:#f92672">{</span>
-<span style="color:#75715e"># This is the source file on disk to use as the input template. This is often</span>
-<span style="color:#75715e"># called the &#34;Consul Template template&#34;. This option is required if not using</span>
-<span style="color:#75715e"># the `contents` option.</span>
-<span style="color:#75715e"># source = &#34;/path/on/disk/to/template.ctmpl&#34;</span>
-source <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/data/consul_template/templates/lnode-discovery.ctmpl&#34;</span>
-<span style="color:#75715e"># This is the destination path on disk where the source template will render.</span>
-<span style="color:#75715e"># If the parent directories do not exist, Consul Template will attempt to</span>
-<span style="color:#75715e"># create them.</span>
-<span style="color:#75715e"># destination = &#34;/path/on/disk/where/template/will/render.txt&#34;</span>
-destination <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/data/prometheus/prometheus-1.7.1.linux-amd64/conf.d/lnode-discovery.json&#34;</span>
-<span style="color:#75715e"># This is the optional command to run when the template is rendered. The</span>
-<span style="color:#75715e"># command will only run if the resulting template changes. The command must</span>
-<span style="color:#75715e"># return within 30s (configurable), and it must have a successful exit code.</span>
-<span style="color:#75715e"># Consul Template is not a replacement for a process monitor or init system.</span>
-command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
-<span style="color:#75715e"># This is the maximum amount of time to wait for the optional command to</span>
-<span style="color:#75715e"># return. Default is 30s.</span>
-command_timeout <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;60s&#34;</span>
-<span style="color:#75715e"># This option backs up the previously rendered template at the destination</span>
-<span style="color:#75715e"># path before writing a new one. It keeps exactly one backup. This option is</span>
-<span style="color:#75715e"># useful for preventing accidental changes to the data without having a</span>
-<span style="color:#75715e"># rollback strategy.</span>
-backup <span style="color:#f92672">=</span> true
-<span style="color:#75715e"># This is the `minimum(:maximum)` to wait before rendering a new template to</span>
-<span style="color:#75715e"># disk and triggering a command, separated by a colon (`:`). If the optional</span>
-<span style="color:#75715e"># maximum value is omitted, it is assumed to be 4x the required minimum value.</span>
-<span style="color:#75715e"># This is a numeric time with a unit suffix (&#34;5s&#34;). There is no default value.</span>
-<span style="color:#75715e"># The wait value for a template takes precedence over any globally-configured</span>
-<span style="color:#75715e"># wait.</span>
-left_delimiter <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;{</span>$<span style="color:#e6db74">&#34;</span>
-right_delimiter <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span>$<span style="color:#e6db74">}&#34;</span>
-wait <span style="color:#f92672">{</span>
-min <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2s&#34;</span>
-max <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;20s&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-template <span style="color:#f92672">{</span>
-source <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/data/consul_template/templates/wnode-discovery.ctmpl&#34;</span>
-destination <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/data/prometheus/prometheus-1.7.1.linux-amd64/conf.d/wnode-discovery.json&#34;</span>
-command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
-backup <span style="color:#f92672">=</span> true
-command_timeout <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;60s&#34;</span>
-left_delimiter <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;{</span>$<span style="color:#e6db74">&#34;</span>
-right_delimiter <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span>$<span style="color:#e6db74">}&#34;</span>
-wait <span style="color:#f92672">{</span>
-min <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2s&#34;</span>
-max <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;20s&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+<span class="nv">log_level</span> <span class="o">=</span> <span class="s2">&#34;warn&#34;</span>
+syslog <span class="o">{</span>
+<span class="c1"># This enables syslog logging.</span>
+<span class="nv">enabled</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="c1"># This is the name of the syslog facility to log to.</span>
+<span class="nv">facility</span> <span class="o">=</span> <span class="s2">&#34;LOCAL5&#34;</span>
+<span class="o">}</span>
+consul <span class="o">{</span>
+<span class="c1"># auth {</span>
+<span class="c1"># enabled = true</span>
+<span class="c1"># username = &#34;test&#34;</span>
+<span class="c1"># password = &#34;test&#34;</span>
+<span class="c1"># }</span>
+<span class="nv">address</span> <span class="o">=</span> <span class="s2">&#34;172.30.100.45:8500&#34;</span>
+<span class="c1"># token = &#34;abcd1234&#34;</span>
+retry <span class="o">{</span>
+<span class="nv">enabled</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="nv">attempts</span> <span class="o">=</span> <span class="m">12</span>
+<span class="nv">backoff</span> <span class="o">=</span> <span class="s2">&#34;250ms&#34;</span>
+<span class="c1"># If max_backoff is set to 10s and backoff is set to 1s, sleep times</span>
+<span class="c1"># would be: 1s, 2s, 4s, 8s, 10s, 10s, ...</span>
+<span class="nv">max_backoff</span> <span class="o">=</span> <span class="s2">&#34;3m&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>
+<span class="c1"># This block defines the configuration for a template. Unlike other block</span>
+<span class="c1"># this block may be specified multiple times to configure multiple templates.</span>
+template <span class="o">{</span>
+<span class="c1"># This is the source file on disk to use as the input template. This is often</span>
+<span class="c1"># called the &#34;Consul Template template&#34;. This option is required if not using</span>
+<span class="c1"># the `contents` option.</span>
+<span class="c1"># source = &#34;/path/on/disk/to/template.ctmpl&#34;</span>
+<span class="nb">source</span> <span class="o">=</span> <span class="s2">&#34;/data/consul_template/templates/lnode-discovery.ctmpl&#34;</span>
+<span class="c1"># This is the destination path on disk where the source template will render.</span>
+<span class="c1"># If the parent directories do not exist, Consul Template will attempt to</span>
+<span class="c1"># create them.</span>
+<span class="c1"># destination = &#34;/path/on/disk/where/template/will/render.txt&#34;</span>
+<span class="nv">destination</span> <span class="o">=</span> <span class="s2">&#34;/data/prometheus/prometheus-1.7.1.linux-amd64/conf.d/lnode-discovery.json&#34;</span>
+<span class="c1"># This is the optional command to run when the template is rendered. The</span>
+<span class="c1"># command will only run if the resulting template changes. The command must</span>
+<span class="c1"># return within 30s (configurable), and it must have a successful exit code.</span>
+<span class="c1"># Consul Template is not a replacement for a process monitor or init system.</span>
+<span class="nb">command</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+<span class="c1"># This is the maximum amount of time to wait for the optional command to</span>
+<span class="c1"># return. Default is 30s.</span>
+<span class="nv">command_timeout</span> <span class="o">=</span> <span class="s2">&#34;60s&#34;</span>
+<span class="c1"># This option backs up the previously rendered template at the destination</span>
+<span class="c1"># path before writing a new one. It keeps exactly one backup. This option is</span>
+<span class="c1"># useful for preventing accidental changes to the data without having a</span>
+<span class="c1"># rollback strategy.</span>
+<span class="nv">backup</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="c1"># This is the `minimum(:maximum)` to wait before rendering a new template to</span>
+<span class="c1"># disk and triggering a command, separated by a colon (`:`). If the optional</span>
+<span class="c1"># maximum value is omitted, it is assumed to be 4x the required minimum value.</span>
+<span class="c1"># This is a numeric time with a unit suffix (&#34;5s&#34;). There is no default value.</span>
+<span class="c1"># The wait value for a template takes precedence over any globally-configured</span>
+<span class="c1"># wait.</span>
+<span class="nv">left_delimiter</span> <span class="o">=</span> <span class="s2">&#34;{</span>$<span class="s2">&#34;</span>
+<span class="nv">right_delimiter</span> <span class="o">=</span> <span class="s2">&#34;</span>$<span class="s2">}&#34;</span>
+<span class="nb">wait</span> <span class="o">{</span>
+<span class="nv">min</span> <span class="o">=</span> <span class="s2">&#34;2s&#34;</span>
+<span class="nv">max</span> <span class="o">=</span> <span class="s2">&#34;20s&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>
+template <span class="o">{</span>
+<span class="nb">source</span> <span class="o">=</span> <span class="s2">&#34;/data/consul_template/templates/wnode-discovery.ctmpl&#34;</span>
+<span class="nv">destination</span> <span class="o">=</span> <span class="s2">&#34;/data/prometheus/prometheus-1.7.1.linux-amd64/conf.d/wnode-discovery.json&#34;</span>
+<span class="nb">command</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+<span class="nv">backup</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="nv">command_timeout</span> <span class="o">=</span> <span class="s2">&#34;60s&#34;</span>
+<span class="nv">left_delimiter</span> <span class="o">=</span> <span class="s2">&#34;{</span>$<span class="s2">&#34;</span>
+<span class="nv">right_delimiter</span> <span class="o">=</span> <span class="s2">&#34;</span>$<span class="s2">}&#34;</span>
+<span class="nb">wait</span> <span class="o">{</span>
+<span class="nv">min</span> <span class="o">=</span> <span class="s2">&#34;2s&#34;</span>
+<span class="nv">max</span> <span class="o">=</span> <span class="s2">&#34;20s&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>主要配置参数：</p>
@@ -475,56 +430,56 @@ max <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;20s&#3
 <li>服务启动</li>
 </ol>
 <p>启动consul-template服务，指定配置文件。</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./consul-template -config ./consul-template.conf
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./consul-template -config ./consul-template.conf
 </code></pre></td></tr></table>
 </div>
 </div><ol start="4">
 <li>模板渲染</li>
 </ol>
 <p>根据目标文件的格式去渲染consul-template的模板，比如我这里的prometheus基于文件的服务发现模板如下：</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat templates/lnode-discovery.ctmpl
-<span style="color:#f92672">[</span>
-<span style="color:#f92672">{</span>$ range tree <span style="color:#e6db74">&#34;prometheus/linux&#34;</span> $<span style="color:#f92672">}</span>
-<span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;targets&#34;</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;{</span>$<span style="color:#e6db74"> .Value </span>$<span style="color:#e6db74">}&#34;</span><span style="color:#f92672">]</span>,
-<span style="color:#e6db74">&#34;labels&#34;</span>: <span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;{</span>$<span style="color:#e6db74"> .Key </span>$<span style="color:#e6db74">}&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>,
-<span style="color:#f92672">{</span>$ end $<span style="color:#f92672">}</span>
-<span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;targets&#34;</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;172.30.100.1:9100&#34;</span><span style="color:#f92672">]</span>,
-<span style="color:#e6db74">&#34;labels&#34;</span>: <span style="color:#f92672">{</span>
-<span style="color:#e6db74">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;consul01&#34;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">]</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">cat templates/lnode-discovery.ctmpl
+<span class="o">[</span>
+<span class="o">{</span>$ range tree <span class="s2">&#34;prometheus/linux&#34;</span> $<span class="o">}</span>
+<span class="o">{</span>
+<span class="s2">&#34;targets&#34;</span>: <span class="o">[</span><span class="s2">&#34;{</span>$<span class="s2"> .Value </span>$<span class="s2">}&#34;</span><span class="o">]</span>,
+<span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
+<span class="s2">&#34;hostname&#34;</span>: <span class="s2">&#34;{</span>$<span class="s2"> .Key </span>$<span class="s2">}&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>,
+<span class="o">{</span>$ end $<span class="o">}</span>
+<span class="o">{</span>
+<span class="s2">&#34;targets&#34;</span>: <span class="o">[</span><span class="s2">&#34;172.30.100.1:9100&#34;</span><span class="o">]</span>,
+<span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
+<span class="s2">&#34;hostname&#34;</span>: <span class="s2">&#34;consul01&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span>
+<span class="o">]</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>循环读取consul的K/V存储prometheus/linux/目录下的值，&ldquo;targets&quot;取的是Key，hostname取的是Key的值。</p>
@@ -535,208 +490,121 @@ max <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;20s&#3
 </ol>
 <p>现在在打开consul的ui界面，默认是8500端口，在KEY/VALUE的prometheus/linux/目录下新加一个consul02、consul03&hellip;，即可自动生成的配置文件。</p>
 <p>至此，prometheus基于文件的服务发现，初步完成。</p>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">xujpxm</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-06-10
         
-<div class="post-archive">
-    <ul class="post-copyright">
-        <li><strong>原文作者：</strong><a rel="author" href="https://www.iyue.pub">xujpxm</a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://www.iyue.pub/post/prometheus-fd-config/">https://www.iyue.pub/post/prometheus-fd-config/</a></li>
-        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 非商业转载请注明出处(作者，原文链接),商业转载请联系作者授权,谢谢!</span>
+  </p>
 </div>
-<br/>
-
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/supervisor-with-prometheus/">Supervisord守护Prometheus遇到的坑</a></li>
-        
-        <li><a href="/post/memFree-memAvailable/">Linux中MemFree与MemAvailable的区别</a></li>
-        
-        <li><a href="/post/linux-high-concurrency/">高并发下Linux系统及kernel参数优化</a></li>
-        
-        <li><a href="/archives/">归档</a></li>
-        
-        <li><a href="/search/">搜索</a></li>
-        
-    </ul>
-</div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://www.iyue.pub/tags/Prometheus'>Prometheus</a></li>
-                
-            </ul>
-            
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/wechat_pay_qrcode.jpeg">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/alipay_qrcode.jpeg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/prometheus/">Prometheus</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/nginx-cache/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Nginx缓存开启</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/supervisor-with-prometheus/">
+            <span class="next-text nav-default">Supervisord守护Prometheus遇到的坑</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "xujpxm/myblog"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="xujpxm/myblog"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
-</div>
-
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='https://www.iyue.pub/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://www.iyue.pub">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://www.iyue.pub/post/grafana-folder-permission/" title="Grafana为Dashboard添加独立权限控制">Grafana为Dashboard添加独立权限控制</a>
-    </li>
-    
-    <li>
-        <a href="https://www.iyue.pub/post/nginx-log-with-response-body/" title="听说你的Nginx还不会记录Response Body?">听说你的Nginx还不会记录Response Body?</a>
-    </li>
-    
-    <li>
-        <a href="https://www.iyue.pub/post/nginx-cache/" title="Nginx缓存开启">Nginx缓存开启</a>
-    </li>
-    
-    <li>
-        <a href="https://www.iyue.pub/post/prometheus-fd-config/" title="Prometheus基于文件的服务发现">Prometheus基于文件的服务发现</a>
-    </li>
-    
-    <li>
-        <a href="https://www.iyue.pub/post/supervisor-with-prometheus/" title="Supervisord守护Prometheus遇到的坑">Supervisord守护Prometheus遇到的坑</a>
-    </li>
-    
-    <li>
-        <a href="https://www.iyue.pub/post/memFree-memAvailable/" title="Linux中MemFree与MemAvailable的区别">Linux中MemFree与MemAvailable的区别</a>
-    </li>
-    
-    <li>
-        <a href="https://www.iyue.pub/post/linux-high-concurrency/" title="高并发下Linux系统及kernel参数优化">高并发下Linux系统及kernel参数优化</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-<section class="widget">
-    <h3 class="widget-title" style="color:red">福利派送</h3>
-    <ul class="widget-list">
-        
-        <li>
-            <a href="" title="广告位，虚位以待" target="_blank" style="color:red">
-                
-                    广告位，虚位以待
-                
-            </a>
-        </li>
-        
-    </ul>
-</section>
-
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li><a href="https://www.iyue.pub/categories/Linux/">Linux (2)</a></li>
-    
-    <li><a href="https://www.iyue.pub/categories/Service/">Service (2)</a></li>
-    
-    <li><a href="https://www.iyue.pub/categories/%E7%9B%91%E6%8E%A7/">监控 (3)</a></li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://www.iyue.pub/tags/Grafana/">Grafana</a>
-    
-    <a href="https://www.iyue.pub/tags/Memory/">Memory</a>
-    
-    <a href="https://www.iyue.pub/tags/Nginx/">Nginx</a>
-    
-    <a href="https://www.iyue.pub/tags/Prometheus/">Prometheus</a>
-    
-    <a href="https://www.iyue.pub/tags/%E5%86%85%E6%A0%B8/">内核</a>
-    
-</div>
-    </section>
-
-    
-<section class="widget">
-    <h3 class="widget-title">友情链接</h3>
-    <ul class="widget-list">
-        
-        <li>
-            <a target="_blank" href="http://www.ruanyifeng.com/home.html" title="阮一峰的个人网站">阮一峰的个人网站</a>
-        </li>
-        
-    </ul>
-</section>
-
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://www.iyue.pub/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
-        </div>
-    </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2020 <a href="https://www.iyue.pub">IYue By xujpxm</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-</footer>
-
-
-    
-    <script type="text/javascript">
-        window.MathJax = {
-            tex2jax: {
-                inlineMath: [['$', '$']],
-                processEscapes: true
-                }
-            };
     </script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+    <a href="mailto:xujpxm@163.com,xujpxm@gmail.com" class="iconfont icon-email" title="email"></a>
+    <a href="https://github.com/xujpxm/" class="iconfont icon-github" title="github"></a>
+    <a href="https://www.iyue.pub/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+    <span class="power-by">
+        由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    </span>
+    <span class="division">|</span>
+    <span class="theme-info">
+        主题 -
+        <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+    </span>
+
+    
+
+    <span class="copyright-year">
+        &copy;
+        2018 -
+        2020
+        <span class="heart">
+            <i class="iconfont icon-heart"></i>
+        </span>
+        <span
+            class="author">xujpxm</span>
+    </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
 
 
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+
 
 <script type="application/javascript">
 var doNotTrack = false;
@@ -754,6 +622,6 @@ if (!doNotTrack) {
 
 
 
-</body>
 
+</body>
 </html>

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Prometheus on IYue</title>
-    <link>https://www.iyue.pub/tags/Prometheus/</link>
-    <description>Recent content in Prometheus on IYue</description>
+    <title>Prometheus on IYue 爱月 | XUJPXM的博客</title>
+    <link>https://www.iyue.pub/tags/prometheus/</link>
+    <description>Recent content in Prometheus on IYue 爱月 | XUJPXM的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
+    <copyright>xujpxm</copyright>
     <lastBuildDate>Sun, 10 Jun 2018 17:01:26 +0800</lastBuildDate>
     
-	<atom:link href="https://www.iyue.pub/tags/Prometheus/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.iyue.pub/tags/prometheus/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
