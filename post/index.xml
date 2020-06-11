@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Tue, 12 May 2020 19:16:29 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 17 May 2020 03:41:53 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>从源码看Prometheus的远程写调优</title>
+      <link>https://www.iyue.pub/post/prometheus-remote-write/</link>
+      <pubDate>Sun, 17 May 2020 03:41:53 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/prometheus-remote-write/</guid>
+      <description>&lt;p&gt;本周在配置Prometheus的远端存储的时，发现配置完运行一段时间后，日志中有警告信息: &lt;strong&gt;&amp;ldquo;Skipping resharding, last successful send was beyond threshold&amp;rdquo;&lt;/strong&gt;；排查后发现，原来Prometheus对remote write的配置在最佳实践中早有提及相关优化建议。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Grafana为Dashboard添加独立权限控制</title>

@@ -56,7 +56,7 @@
 <meta property="og:description" content="Do one thing and do it well" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.iyue.pub/" />
-<meta property="og:updated_time" content="2020-04-21T16:59:51+08:00" />
+<meta property="og:updated_time" content="2020-06-11T14:30:45+08:00" />
 <meta itemprop="name" content="IYue 爱月 | XUJPXM的博客">
 <meta itemprop="description" content="Do one thing and do it well"><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IYue 爱月 | XUJPXM的博客"/>
@@ -94,6 +94,8 @@
             <li class="mobile-menu-item">归档</li>
         </a><a href="/about/">
             <li class="mobile-menu-item">关于</li>
+        </a><a href="/friends/">
+            <li class="mobile-menu-item">友情链接</li>
         </a>
     </ul>
 </nav>
@@ -115,6 +117,8 @@
         <a class="menu-item-link" href="/post/">归档</a>
       </li><li class="menu-item">
         <a class="menu-item-link" href="/about/">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/friends/">友情链接</a>
       </li>
   </ul>
 </nav>
@@ -124,6 +128,29 @@
       <div class="content-wrapper">
         <div id="content" class="content">
           <section id="posts" class="posts">
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/prometheus-remote-write/">从源码看Prometheus的远程写调优</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2020-05-17 </span>
+      <div class="post-category">
+          <a href="/categories/%E7%9B%91%E6%8E%A7/"> 监控 </a>
+          </div>
+        <span class="more-meta"> 约 1255 字 </span>
+        <span class="more-meta"> 预计阅读 3 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>本周在配置Prometheus的远端存储的时，发现配置完运行一段时间后，日志中有警告信息: <strong>&ldquo;Skipping resharding, last successful send was beyond threshold&rdquo;</strong>；排查后发现，原来Prometheus对remote write的配置在最佳实践中早有提及相关优化建议。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/prometheus-remote-write/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
     <article class="post">
   <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/grafana-folder-permission/">Grafana为Dashboard添加独立权限控制</a></h1>
@@ -263,34 +290,14 @@
   </div>
 </article>
 
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/linux-high-concurrency/">高并发下Linux系统及kernel参数优化</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2018-05-24 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          </div>
-        <span class="more-meta"> 约 4640 字 </span>
-        <span class="more-meta"> 预计阅读 10 分钟 </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>众所周知在默认参数情况下Linux对高并发支持并不好，主要受限于单进程最大打开文件数限制、内核TCP参数方面和IO事件分配机制等。下面就从几方面来调整使Linux系统能够支持高并发环境。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/linux-high-concurrency/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
     </section>
   
   <nav class="pagination">
     
-    
+    <a class="next" href="/page/2/">
+        <span class="next-text">下一页</span>
+        <i class="iconfont icon-right"></i>
+      </a>
   </nav>
         </div>
         
