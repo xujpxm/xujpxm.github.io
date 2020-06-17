@@ -61,7 +61,7 @@
 <meta itemprop="description" content="本周在配置Prometheus的远端存储的时，发现配置完运行一段时间后，日志中有警告信息: &ldquo;Skipping resharding, last successful send was beyond threshold&rdquo;；排查后发现，原来Prometheus对remote write的配置在最佳实践中早有提及相关优化建议。">
 <meta itemprop="datePublished" content="2020-05-17T03:41:53&#43;08:00" />
 <meta itemprop="dateModified" content="2020-05-17T03:41:53&#43;08:00" />
-<meta itemprop="wordCount" content="1255">
+<meta itemprop="wordCount" content="2742">
 
 
 
@@ -144,8 +144,8 @@
         <div class="post-category">
             <a href="/categories/%E7%9B%91%E6%8E%A7/"> 监控 </a>
             </div>
-          <span class="more-meta"> 约 1255 字 </span>
-          <span class="more-meta"> 预计阅读 3 分钟 </span>
+          <span class="more-meta"> 约 2742 字 </span>
+          <span class="more-meta"> 预计阅读 6 分钟 </span>
         
       </div>
     </header>
@@ -159,6 +159,29 @@
     <li><a href="#定义队列管理器">定义队列管理器</a></li>
     <li><a href="#队列管理器初始化">队列管理器初始化</a></li>
     <li><a href="#触发reshard条件">触发reshard条件</a></li>
+    <li><a href="#prometheus的远程写">Prometheus的远程写</a>
+      <ul>
+        <li><a href="#远程写内存使用">远程写内存使用</a>
+          <ul>
+            <li><a href="#内存公式">内存公式</a></li>
+          </ul>
+        </li>
+        <li><a href="#避免oom的调整方法">避免OOM的调整方法</a></li>
+      </ul>
+    </li>
+    <li><a href="#远程写调优">远程写调优</a>
+      <ul>
+        <li><a href="#capacity">capacity</a></li>
+        <li><a href="#max_shards">max_shards</a></li>
+        <li><a href="#min_shards">min_shards</a></li>
+        <li><a href="#max_samples_per_send">max_samples_per_send</a></li>
+        <li><a href="#batch_send_deadline">batch_send_deadline</a></li>
+        <li><a href="#min_backoff">min_backoff</a></li>
+        <li><a href="#max_backoff">max_backoff</a></li>
+      </ul>
+    </li>
+    <li><a href="#结束语">结束语</a></li>
+    <li><a href="#参考文档">参考文档</a></li>
   </ul>
 </nav>
   </div>
@@ -348,12 +371,12 @@
 </div>
 </div><p>通过初始化方法，我们可以知道如下几点：</p>
 <ul>
-<li>numShards：分片数据量，赋值为cfg.MinShards，即Prometheus remote_write的配置参数<code>min_shards</code>的值；相当于远程写启动时采用min_shards配置的数量，作为使用分片的默认值；</li>
-<li>reshardChan：这里声明了一个int类型的channel，且无缓冲区；上面提到的队列和shard，其实是依托于golang channel来实现的；</li>
+<li>numShards：分片数量，赋值为cfg.MinShards，即Prometheus remote_write的配置参数<code>min_shards</code>的值；相当于远程写启动时采用min_shards配置的数量，作为使用分片的默认值；</li>
+<li>reshardChan：这里声明了一个int类型的channel，且无缓冲区；上面提到的队列和shard，其实是依托于golang channel来实现的；<strong>我们知道channel从根本上来说，只是一个数据结构，可以被写入数据，也可以被读取数据；所谓发送数据到channel，或者从channel读取数据，说白了就是对一个数据结构的操作，仅此而已；</strong></li>
 </ul>
 <h2 id="触发reshard条件">触发reshard条件</h2>
-<p>文章开头的日志信息，我们看到提示是&quot;skipping resharding&rdquo;，即跳过了reshard动作；我们不禁要发出三连问：reshard是什么(what)？为什么需要reshard(why)？怎么样去触发reshard(how)？</p>
-<p>判断resharding是否应该发生，<code>return false</code>时，不触发resharding动作；</p>
+<p>文章开头的日志信息，我们看到提示是&quot;skipping resharding&rdquo;，即跳过了reshard动作；我们不禁要发出三连问：reshard是什么(<strong>what</strong>)？为什么需要reshard(<strong>why</strong>)？怎么样触发reshard(<strong>how</strong>)？</p>
+<p>下面的代码解释了：什么情况下resharding动作应该发生；<code>return true</code>时，代表应该发生reshard动作；</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -390,7 +413,71 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
+</div><ol>
+<li>当需要的分片数和numShards相等时，不触发reshard动作</li>
+<li>最小发送数据时间戳 = 当前时间戳 - 2 * BatchSendDeadline</li>
+<li>lsts即最近一次发送数据的时间戳</li>
+<li>当lsts小于最小发送时间戳时，记录日志，不触发reshard动作；</li>
+<li>不满足上述1和4条件时，触发reshard动作</li>
+</ol>
+<p>从这里我们终于找到文章开头处日志信息的出处，原来是因为“最近一次发送数据的时间戳”小于“最小发送数据时间戳”，也即跟<code>BatchSendDeadline</code>的配置有关；</p>
+<h2 id="prometheus的远程写">Prometheus的远程写</h2>
+<p>在理解reshard之前，我们先要了解shard的概念。这就说到了Prometheus的Remote Write。</p>
+<p>每个远程写目的地都启动一个队列，该队列从write-ahead log (WAL)中读取数据，将样本写到一个由shard(即分片)拥有的内存队列中，然后分片将请求发送到配置的端点。数据流程如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">      |--&gt;  queue (shard_1)   --&gt; remote endpoint
+WAL --|--&gt;  queue (shard_...) --&gt; remote endpoint
+      |--&gt;  queue (shard_n)   --&gt; remote endpoint
+</code></pre></td></tr></table>
 </div>
+</div><p>当一个分片备份并填满它的队列时，Prometheus将阻止从WAL中读取任何分片。如果失败了，则进行重试，其间不会丢失数据，除非远程端点保持关闭状态超过2小时。2小时后，WAL将被压缩，未发送的数据将丢失。
+在远程写过程中，Prometheus将根据输入采样速率、未发送的采样数量和发送每个采样数据所需的时间，不断计算出最优的分片数量(即上面提到的numShards)。</p>
+<h3 id="远程写内存使用">远程写内存使用</h3>
+<p>使用远程写操作会增加Prometheus的内存占用。大多数用户报告内存使用量增加了25%，但是这个数字取决于数据的结构。对于WAL中的每个时间序列，远程写缓存一个key为时间序列ID，value为标签值的map，导致大量的时间序列变动，从而显著地增加内存使用量。</p>
+<h4 id="内存公式">内存公式</h4>
+<p>影响内存使用的因素有：</p>
+<ul>
+<li>series cache</li>
+<li>shard</li>
+<li>shard queue</li>
+</ul>
+<p>公式：</p>
+<p>Shard memory = number of shards * (capacity + max_samples_per_send)</p>
+<h3 id="避免oom的调整方法">避免OOM的调整方法</h3>
+<p>调优时，请考虑减少max_shards同时增加capacity和max_samples_per_send以避免内存不足。原则如下：</p>
+<ul>
+<li>减少max_shards</li>
+<li>增加capacity</li>
+<li>增加max_samples_per_send</li>
+</ul>
+<h2 id="远程写调优">远程写调优</h2>
+<p>前面啰嗦了半天，直接上结论</p>
+<h3 id="capacity">capacity</h3>
+<p>3-10倍max_samples_per_send</p>
+<h3 id="max_shards">max_shards</h3>
+<p>建议默认(1000)；不建议太多，会导致OOM；除非远程存储写入非常缓慢，否则不建议将max_shards的值调整为比默认值大。相反，调整为小于默认值会减少内存占用；</p>
+<h3 id="min_shards">min_shards</h3>
+<p>默认(1)，可适当调大；如果远端写入落后，Prometheus会自动扩展分片的数量；增加最小分片将允许 Prometheus在计算所需的分片数时避免在开始时落后。</p>
+<h3 id="max_samples_per_send">max_samples_per_send</h3>
+<p>默认值(100)足够小，适用于大多数系统，可适当调大；根据所使用的后端，适当调整每次发送的最大样本数。因为许多系统，通过每批发送更多样本而不会显著增加延迟。而有些后端，如果每个请求中发送大量样本(simples)，就会出现问题。</p>
+<h3 id="batch_send_deadline">batch_send_deadline</h3>
+<p>对时间不敏感时可适当增大；设置单个分片发送之间的最大时间;即使排队的分片尚未到达max_samples_per_send，也会发送请求;对于不区分延迟的低容量系统，可以增加此值，以提高请求效率;</p>
+<h3 id="min_backoff">min_backoff</h3>
+<p>重试失败请求之前的最短等待时间或控制重试失败请求之前等待的最短时间。</p>
+<h3 id="max_backoff">max_backoff</h3>
+<p>控制重试失败请求之前等待的最大时间量。</p>
+<h2 id="结束语">结束语</h2>
+<p>实际应用时，需要可根据优化建议，适当调整测试，达到系统最优水平。</p>
+<h2 id="参考文档">参考文档</h2>
+<ul>
+<li><a href="https://prometheus.io/docs/practices/remote_write/#max_shards">https://prometheus.io/docs/practices/remote_write/#max_shards</a></li>
+</ul>
     </div>
 
     <div class="post-copyright">
