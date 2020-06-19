@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go语言学习 on IYue 爱月 | XUJPXM的博客</title>
+    <link>https://www.iyue.pub/categories/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/</link>
+    <description>Recent content in go语言学习 on IYue 爱月 | XUJPXM的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>xujpxm</copyright>
+    <lastBuildDate>Thu, 18 Jun 2020 18:15:53 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.iyue.pub/categories/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go学习每日一问(1)-defer</title>
+      <link>https://www.iyue.pub/post/go-question-defer/</link>
+      <pubDate>Thu, 18 Jun 2020 18:15:53 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question-defer/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点🤔。今天我们来看下defer函数相关的。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

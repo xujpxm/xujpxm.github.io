@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Go学习每日一问(1)-defer</title>
+      <link>https://www.iyue.pub/post/go-question-defer/</link>
+      <pubDate>Thu, 18 Jun 2020 18:15:53 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question-defer/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点🤔。今天我们来看下defer函数相关的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>友情链接</title>
       <link>https://www.iyue.pub/friends/</link>
       <pubDate>Thu, 11 Jun 2020 14:30:45 +0800</pubDate>

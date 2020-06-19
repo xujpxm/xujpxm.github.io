@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Sun, 17 May 2020 03:41:53 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 18 Jun 2020 18:15:53 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go学习每日一问(1)-defer</title>
+      <link>https://www.iyue.pub/post/go-question-defer/</link>
+      <pubDate>Thu, 18 Jun 2020 18:15:53 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question-defer/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点🤔。今天我们来看下defer函数相关的。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>从源码看Prometheus的远程写调优</title>
