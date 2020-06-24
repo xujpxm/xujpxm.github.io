@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Go学习每日一问(2)-range</title>
+      <link>https://www.iyue.pub/post/go-question-range/</link>
+      <pubDate>Tue, 23 Jun 2020 19:16:17 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question-range/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下range的一个知识点🤔。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Go学习每日一问(1)-defer</title>
       <link>https://www.iyue.pub/post/go-question-defer/</link>
       <pubDate>Thu, 18 Jun 2020 18:15:53 +0800</pubDate>
