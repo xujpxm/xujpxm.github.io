@@ -198,6 +198,27 @@
   </url>
   
   <url>
+    <loc>https://www.iyue.pub/tags/vyos/</loc>
+    <lastmod>2016-06-22T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.iyue.pub/post/vyos/</loc>
+    <lastmod>2016-06-22T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.iyue.pub/categories/%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2016-06-22T10:24:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://www.iyue.pub/archives/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
