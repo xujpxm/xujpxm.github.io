@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Go学习每日一问(3)-make - IYue 爱月 | XUJPXM的博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author"
+    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下make的一个知识点🤔。
+" /><meta name="keywords"
+    content="Hugo, even, iyue, xujpxm, DevOps" />
+
+
+
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-2770385078098302",
+        enable_page_level_ads: true
+    });
+</script>
+
+
+<meta name="generator" content="Hugo 0.69.0 with theme even" />
+
+
+<link rel="canonical" href="https://www.iyue.pub/post/go-question-make/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Go学习每日一问(3)-make" />
+<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下make的一个知识点🤔。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.iyue.pub/post/go-question-make/" />
+<meta property="article:published_time" content="2020-06-28T12:49:18+08:00" />
+<meta property="article:modified_time" content="2020-06-28T12:49:18+08:00" />
+<meta itemprop="name" content="Go学习每日一问(3)-make">
+<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下make的一个知识点🤔。">
+<meta itemprop="datePublished" content="2020-06-28T12:49:18&#43;08:00" />
+<meta itemprop="dateModified" content="2020-06-28T12:49:18&#43;08:00" />
+<meta itemprop="wordCount" content="608">
+
+
+
+<meta itemprop="keywords" content="golang," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go学习每日一问(3)-make"/>
+<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下make的一个知识点🤔。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">IYue</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item">首页</li>
+        </a><a href="/categories/">
+            <li class="mobile-menu-item">分类</li>
+        </a><a href="/tags/">
+            <li class="mobile-menu-item">标签</li>
+        </a><a href="/post/">
+            <li class="mobile-menu-item">归档</li>
+        </a><a href="/about/">
+            <li class="mobile-menu-item">关于</li>
+        </a><a href="/friends/">
+            <li class="mobile-menu-item">友情链接</li>
+        </a>
+    </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">IYue</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/friends/">友情链接</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Go学习每日一问(3)-make</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-06-28 </span>
+        <div class="post-category">
+            <a href="/categories/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/"> go语言学习 </a>
+            </div>
+          <span class="more-meta"> 约 608 字 </span>
+          <span class="more-meta"> 预计阅读 2 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#代码片段">代码片段</a></li>
+    <li><a href="#答疑解惑">答疑解惑</a></li>
+    <li><a href="#下期提问">下期提问</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下make的一个知识点🤔。</p>
+<h2 id="代码片段">代码片段</h2>
+<p>看如下这段代码，并猜测输出结果：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">makeList</span><span class="p">()</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">s</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+	<span class="nx">s</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">s</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">makeList2</span><span class="p">()</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">s</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+	<span class="nx">s</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">s</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">s</span> <span class="o">:=</span> <span class="nf">makeList</span><span class="p">()</span>
+	<span class="nx">s2</span> <span class="o">:=</span> <span class="nf">makeList2</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;打印s：&#34;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;打印s2：&#34;</span><span class="p">,</span> <span class="nx">s2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="http://p1.pstatp.com/origin/dfic-imagehandler/022557d9-75cd-4e31-bf5e-c9bdbb45ce0c" alt="思考后看答案"></p>
+<p>思考后看答案</p>
+<hr>
+<h2 id="答疑解惑">答疑解惑</h2>
+<p>代码执行结果如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">打印s</span><span class="err">：</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nx">打印s2</span><span class="err">：</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>你做对了吗？😊</p>
+<p>这道题考察的是slice的make和append方法；Go语言提供的内置函数make()可以用于灵活的创建数组切片,<code>s := make([]int, 5)</code> 创建了一个初始元素个数为5的数组切片，<strong>且元素初始值为0</strong>；<code>append()</code>函数可以向slice的尾端继续新增元素，从而形成一个新的数组切片；而<code>s := make([]int, 0)</code>创建了一个初始元素个数为零个的数组切片，即当前存储的元素个数为零，使用append追加元素，所加即所得，不存在初始值为0的元素，所以得到[1 2 3]。</p>
+<h2 id="下期提问">下期提问</h2>
+<p>观察如下代码片段，判断能否编译通过；如果可以，写出输出结果?</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">num</span>       <span class="p">=</span> <span class="mi">60</span>
+	<span class="nx">doubleNum</span> <span class="o">:=</span> <span class="nx">num</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">num</span><span class="p">,</span> <span class="nx">doubleNum</span><span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>答案及解析将在下期文章中给出，欢迎大家在评论区留言，独乐乐不如众乐乐，交流学习，互相进步。</p>
+<hr>
+<p><strong>欢迎转发和评论。更多优质原创文章，欢迎关注微信公众号“IYue爱月”或扫描下方二维码：</strong></p>
+<p><img src="/media/xujpxm_qrcode_for_gh_12cm.jpg" alt="xujpxm_qrcode_gh"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">xujpxm</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-06-28
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 非商业转载请注明出处(作者，原文链接),商业转载请联系作者授权,谢谢!</span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/wechat_pay_qrcode.jpeg">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/alipay_qrcode.jpeg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/golang/">golang</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/go-question-range/">
+            <span class="next-text nav-default">Go学习每日一问(2)-range</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="xujpxm/myblog"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+    <a href="mailto:xujpxm@163.com,xujpxm@gmail.com" class="iconfont icon-email" title="email"></a>
+    <a href="https://github.com/xujpxm/" class="iconfont icon-github" title="github"></a>
+    <a href="https://www.iyue.pub/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+    <span class="power-by">
+        由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    </span>
+    <span class="division">|</span>
+    <span class="theme-info">
+        主题 -
+        <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+    </span>
+
+    
+
+    <span class="copyright-year">
+        &copy;
+        2018 -
+        2020
+        <span class="heart">
+            <i class="iconfont icon-heart"></i>
+        </span>
+        <span
+            class="author">xujpxm</span>
+    </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-119883712-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

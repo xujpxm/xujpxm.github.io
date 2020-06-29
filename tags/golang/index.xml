@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Tue, 23 Jun 2020 19:16:17 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jun 2020 12:49:18 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go学习每日一问(3)-make</title>
+      <link>https://www.iyue.pub/post/go-question-make/</link>
+      <pubDate>Sun, 28 Jun 2020 12:49:18 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question-make/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下make的一个知识点🤔。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Go学习每日一问(2)-range</title>
