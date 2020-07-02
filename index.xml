@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Go学习每日一问(5)-struct</title>
+      <link>https://www.iyue.pub/post/go-question5-struct/</link>
+      <pubDate>Wed, 01 Jul 2020 13:18:35 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question5-struct/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下结构体的一个知识点🤔。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Go学习每日一问(4)-var</title>
       <link>https://www.iyue.pub/post/go-question-var4/</link>
       <pubDate>Mon, 29 Jun 2020 13:19:18 +0800</pubDate>
