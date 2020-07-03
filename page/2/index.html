@@ -130,6 +130,52 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/prometheus-remote-write/">从源码看Prometheus的远程写调优</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2020-05-17 </span>
+      <div class="post-category">
+          <a href="/categories/%E7%9B%91%E6%8E%A7/"> 监控 </a>
+          </div>
+        <span class="more-meta"> 约 2742 字 </span>
+        <span class="more-meta"> 预计阅读 6 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>本周在配置Prometheus的远端存储的时，发现配置完运行一段时间后，日志中有警告信息: <strong>&ldquo;Skipping resharding, last successful send was beyond threshold&rdquo;</strong>；排查后发现，原来Prometheus对remote write的配置在最佳实践中早有提及相关优化建议。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/prometheus-remote-write/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/grafana-folder-permission/">Grafana为Dashboard添加独立权限控制</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2020-05-12 </span>
+      <div class="post-category">
+          <a href="/categories/%E7%9B%91%E6%8E%A7/"> 监控 </a>
+          </div>
+        <span class="more-meta"> 约 1753 字 </span>
+        <span class="more-meta"> 预计阅读 4 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>Grafana作为一款开源的度量分析与可视化套件，已经得到了大家的认可并被广泛使用，他可用于基础设施的时序监控数据展示，应用程序数据分析可视化，另外在包括气象、家庭自动化和过程控制等其他领域也使用广泛。Grafana支持Mysql、Elasticsearch、Prometheus、InfluxDB等众多数据源，每个数据源都有一个特定的查询编辑器，可以根据自己的业务需要，撰写多种表达式，绘制多种数据展示图表。但有时你绘制的图表信息，如若涉及敏感信息，不想被所有人看到的时候，该怎么办呢？</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/grafana-folder-permission/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/nginx-log-with-response-body/">听说你的Nginx还不会记录Response Body?</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2020-05-01 </span>
@@ -244,52 +290,6 @@
   </div>
 </article>
 
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/linux-high-concurrency/">高并发下Linux系统及kernel参数优化</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2018-05-24 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          </div>
-        <span class="more-meta"> 约 4640 字 </span>
-        <span class="more-meta"> 预计阅读 10 分钟 </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>众所周知在默认参数情况下Linux对高并发支持并不好，主要受限于单进程最大打开文件数限制、内核TCP参数方面和IO事件分配机制等。下面就从几方面来调整使Linux系统能够支持高并发环境。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/linux-high-concurrency/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/vyos/">VyOS--企业级软路由推荐</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2016-06-22 </span>
-      <div class="post-category">
-          <a href="/categories/%E7%BD%91%E7%BB%9C/"> 网络 </a>
-          </div>
-        <span class="more-meta"> 约 2104 字 </span>
-        <span class="more-meta"> 预计阅读 5 分钟 </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>今天给大家推荐一个好用的开源路由操作系统&mdash;VyOS，也是我个人非常喜欢的一款软路由器。VyOS 是基于 Debian GNU/Linux 的，提供了和其他诸如Cisco的IOS、Juniper的JUNOS类似的操作方式，配置起来感觉特别的舒服，尤其可以使用compare、rollback之类的命令，方便对比配置和错误回滚，深得我心。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/vyos/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
     </section>
   
   <nav class="pagination">
@@ -297,7 +297,10 @@
         <i class="iconfont icon-left"></i>
         <span class="prev-text">上一页</span>
       </a>
-    
+    <a class="next" href="/page/3/">
+        <span class="next-text">下一页</span>
+        <i class="iconfont icon-right"></i>
+      </a>
   </nav>
         </div>
         

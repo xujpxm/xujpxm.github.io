@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Go学习每日一问(5)-struct - IYue 爱月 | XUJPXM的博客</title>
+  <title>Go学习每日一问(6)-type - IYue 爱月 | XUJPXM的博客</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
@@ -17,7 +17,7 @@
 
 
 <meta name="author"
-    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下结构体的一个知识点🤔。
+    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下type的一个知识点🤔。
 " /><meta name="keywords"
     content="Hugo, even, iyue, xujpxm, DevOps" />
 
@@ -38,7 +38,7 @@
 <meta name="generator" content="Hugo 0.69.0 with theme even" />
 
 
-<link rel="canonical" href="https://www.iyue.pub/post/go-question5-struct/" />
+<link rel="canonical" href="https://www.iyue.pub/post/go-question6-type/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -51,23 +51,23 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="Go学习每日一问(5)-struct" />
-<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下结构体的一个知识点🤔。" />
+<meta property="og:title" content="Go学习每日一问(6)-type" />
+<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下type的一个知识点🤔。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://www.iyue.pub/post/go-question5-struct/" />
-<meta property="article:published_time" content="2020-07-01T13:18:35+08:00" />
-<meta property="article:modified_time" content="2020-07-01T13:18:35+08:00" />
-<meta itemprop="name" content="Go学习每日一问(5)-struct">
-<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下结构体的一个知识点🤔。">
-<meta itemprop="datePublished" content="2020-07-01T13:18:35&#43;08:00" />
-<meta itemprop="dateModified" content="2020-07-01T13:18:35&#43;08:00" />
-<meta itemprop="wordCount" content="802">
+<meta property="og:url" content="https://www.iyue.pub/post/go-question6-type/" />
+<meta property="article:published_time" content="2020-07-02T06:10:07+08:00" />
+<meta property="article:modified_time" content="2020-07-02T06:10:07+08:00" />
+<meta itemprop="name" content="Go学习每日一问(6)-type">
+<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下type的一个知识点🤔。">
+<meta itemprop="datePublished" content="2020-07-02T06:10:07&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-02T06:10:07&#43;08:00" />
+<meta itemprop="wordCount" content="535">
 
 
 
 <meta itemprop="keywords" content="golang," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Go学习每日一问(5)-struct"/>
-<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下结构体的一个知识点🤔。"/>
+<meta name="twitter:title" content="Go学习每日一问(6)-type"/>
+<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下type的一个知识点🤔。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -137,14 +137,14 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">Go学习每日一问(5)-struct</h1>
+      <h1 class="post-title">Go学习每日一问(6)-type</h1>
 
       <div class="post-meta">
-        <span class="post-time"> 2020-07-01 </span>
+        <span class="post-time"> 2020-07-02 </span>
         <div class="post-category">
             <a href="/categories/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/"> go语言学习 </a>
             </div>
-          <span class="more-meta"> 约 802 字 </span>
+          <span class="more-meta"> 约 535 字 </span>
           <span class="more-meta"> 预计阅读 2 分钟 </span>
         
       </div>
@@ -163,116 +163,8 @@
   </div>
 </div>
     <div class="post-content">
-      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下结构体的一个知识点🤔。</p>
+      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天来学习下type的一个知识点🤔。</p>
 <h2 id="代码片段">代码片段</h2>
-<p>观察如下代码片段，判断能否编译通过；如果可以，写出输出结果?</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;fmt&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">type</span> <span class="nx">s</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">name</span> <span class="kt">string</span>
-	<span class="nx">age</span>  <span class="kt">int</span>
-<span class="p">}</span>
-
-<span class="kd">type</span> <span class="nx">m</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">age</span>  <span class="kt">int</span>
-	<span class="nx">dict</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">s1</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">{</span><span class="s">&#34;xujpxm&#34;</span><span class="p">,</span> <span class="mi">18</span><span class="p">}</span>
-	<span class="nx">s2</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">{</span><span class="s">&#34;xujpxm&#34;</span><span class="p">,</span> <span class="mi">18</span><span class="p">}</span>
-	<span class="k">if</span> <span class="nx">s1</span> <span class="o">==</span> <span class="nx">s2</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;s1 == s2&#34;</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;s1, s2 不相等&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="nx">m1</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">{</span><span class="mi">18</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;name&#34;</span><span class="p">:</span> <span class="s">&#34;xujpxm&#34;</span><span class="p">}}</span>
-	<span class="nx">m2</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">{</span><span class="mi">18</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;name&#34;</span><span class="p">:</span> <span class="s">&#34;xujpxm&#34;</span><span class="p">}}</span>
-	<span class="k">if</span> <span class="nx">m1</span> <span class="o">==</span> <span class="nx">m2</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;m1 == m2&#34;</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;m1, m2不相等&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
-
-<span class="p">}</span>
-
-</code></pre></td></tr></table>
-</div>
-</div><p>思考后看答案</p>
-<p><img src="http://p1.pstatp.com/origin/pgc-image/0c8eee0c350a460186c65adf7aeac59c" alt="思考后看答案"></p>
-<hr>
-<h2 id="答疑解惑">答疑解惑</h2>
-<p><strong>编译不通过。</strong> 输出结果：<code>invalid operation: m1 == m2 (struct containing map[string]string cannot be compared)</code></p>
-<p>上面代码里<code>s1 == s2</code>是成立的，但<code>m1 == m2</code>处编译不通过，因为结构体里里map无法进行比较；</p>
-<p>这道题目考的是<strong>结构体的比较</strong>，需要注意几点：</p>
-<ul>
-<li>结构体只能比较是否相等，但是不能比较大小</li>
-<li>相同类型的结构体才能够进行比较，结构体是否相同不但与属性类型有关，还与属性顺序相关；例如下面的s3 与 s1 就是不同的结构体；</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go">    <span class="nx">s3</span><span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
-        <span class="nx">age</span>  <span class="kt">int</span>
-        <span class="nx">name</span> <span class="kt">string</span>
-    <span class="p">}{</span><span class="nx">age</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span><span class="nx">name</span><span class="p">:</span><span class="s">&#34;xujpxm&#34;</span><span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>如果结构体的所有成员都可以比较，则该结构体就可以通过 <code>==</code> 或 <code>!=</code> 进行比较是否相等，比较时逐个项进行比较，如果每一项都相等，则两个结构体才相等，否则不相等；</li>
-</ul>
-<p>那什么是可比较的呢，常见的有 bool、数值型、字符、指针、数组等，像slice、map(只能与nil值比较)、function等是不能比较的。 具体可以参考 Go 说明文档。<a href="http://docs.studygolang.com/ref/spec#Comparison_operators">http://docs.studygolang.com/ref/spec#Comparison_operators</a></p>
-<p><strong>其他相关答案，欢迎在评论区留言补充!</strong></p>
-<h2 id="下期提问">下期提问</h2>
 <p>观察如下代码片段，判断能否编译通过；如果可以，写出输出结果?</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -306,6 +198,65 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
+</div><p>思考后看答案&hellip;</p>
+<p><img src="http://p1.pstatp.com/origin/pgc-image/322b11ebf08047e1a7fa89f60461d124" alt="思考后看答案"></p>
+<hr>
+<h2 id="答疑解惑">答疑解惑</h2>
+<p><strong>编译不通过。</strong> 输出结果：<code>cannot use num (type int) as type myInt1 in assignment</code></p>
+<p><code>type myInt1 int</code>意思是通过int类型创建一个新的自定义类型myInt1，<code>type myInt2 = int</code>的意思是给int类型取一个<strong>别名</strong>叫做myInt2，本质上还是int类型；<code>var i1 myInt1 = num</code>,不能把int类型的num赋值给myInt1类型的i1，所以编译不通过；而<code>var i2 myInt2 = num</code>中i2和num同属一个类型，是可以赋值的，i2的值将会为0。</p>
+<p><strong>其他相关答案，欢迎在评论区留言补充!</strong></p>
+<h2 id="下期提问">下期提问</h2>
+<p>观察如下代码片段，判断能否编译通过；如果可以，写出输出结果?</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">l</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">l</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">l</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">l</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">l</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+	<span class="k">return</span> <span class="nx">l</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">a</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">}</span>
+	<span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">append</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
 </div><p>答案及解析将在下期文章中给出，欢迎大家在评论区留言，独乐乐不如众乐乐，交流学习，互相进步。</p>
 <hr>
 <p><strong>欢迎转发和评论。更多优质原创文章，欢迎关注微信公众号“IYue爱月”或扫描下方二维码：</strong></p>
@@ -320,7 +271,7 @@
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
     <span class="item-content">
-        2020-07-01
+        2020-07-02
         
     </span>
   </p>
@@ -349,13 +300,13 @@
           <a href="/tags/golang/">golang</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/post/go-question6-type/">
+        <a class="prev" href="/post/go-question7-slice/">
             <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">Go学习每日一问(6)-type</span>
+            <span class="prev-text nav-default">Go学习每日一问(7)-slice与类型系统</span>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
-        <a class="next" href="/post/go-question-var4/">
-            <span class="next-text nav-default">Go学习每日一问(4)-var</span>
+        <a class="next" href="/post/go-question5-struct/">
+            <span class="next-text nav-default">Go学习每日一问(5)-struct</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>
