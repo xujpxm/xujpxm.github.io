@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Go学习每日一问(9)-init和类型选择 - IYue 爱月 | XUJPXM的博客</title>
+  <title>Go学习每日一问(10)-channel - IYue 爱月 | XUJPXM的博客</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
@@ -17,7 +17,7 @@
 
 
 <meta name="author"
-    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下init和的知识点🤔。
+    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个channel的知识点🤔，同时复习下前9问中提到过的知识点。
 " /><meta name="keywords"
     content="Hugo, even, iyue, xujpxm, DevOps" />
 
@@ -38,7 +38,7 @@
 <meta name="generator" content="Hugo 0.69.0 with theme even" />
 
 
-<link rel="canonical" href="https://www.iyue.pub/post/go-question9-inittype/" />
+<link rel="canonical" href="https://www.iyue.pub/post/go-question10-channel/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -51,23 +51,23 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="Go学习每日一问(9)-init和类型选择" />
-<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下init和的知识点🤔。" />
+<meta property="og:title" content="Go学习每日一问(10)-channel" />
+<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个channel的知识点🤔，同时复习下前9问中提到过的知识点。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://www.iyue.pub/post/go-question9-inittype/" />
-<meta property="article:published_time" content="2020-08-07T18:35:07+08:00" />
-<meta property="article:modified_time" content="2020-08-07T18:35:07+08:00" />
-<meta itemprop="name" content="Go学习每日一问(9)-init和类型选择">
-<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下init和的知识点🤔。">
-<meta itemprop="datePublished" content="2020-08-07T18:35:07&#43;08:00" />
-<meta itemprop="dateModified" content="2020-08-07T18:35:07&#43;08:00" />
-<meta itemprop="wordCount" content="1420">
+<meta property="og:url" content="https://www.iyue.pub/post/go-question10-channel/" />
+<meta property="article:published_time" content="2020-08-21T14:53:07+08:00" />
+<meta property="article:modified_time" content="2020-08-21T14:53:07+08:00" />
+<meta itemprop="name" content="Go学习每日一问(10)-channel">
+<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个channel的知识点🤔，同时复习下前9问中提到过的知识点。">
+<meta itemprop="datePublished" content="2020-08-21T14:53:07&#43;08:00" />
+<meta itemprop="dateModified" content="2020-08-21T14:53:07&#43;08:00" />
+<meta itemprop="wordCount" content="675">
 
 
 
 <meta itemprop="keywords" content="golang," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Go学习每日一问(9)-init和类型选择"/>
-<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下init和的知识点🤔。"/>
+<meta name="twitter:title" content="Go学习每日一问(10)-channel"/>
+<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个channel的知识点🤔，同时复习下前9问中提到过的知识点。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -137,15 +137,15 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">Go学习每日一问(9)-init和类型选择</h1>
+      <h1 class="post-title">Go学习每日一问(10)-channel</h1>
 
       <div class="post-meta">
-        <span class="post-time"> 2020-08-07 </span>
+        <span class="post-time"> 2020-08-21 </span>
         <div class="post-category">
             <a href="/categories/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/"> go语言学习 </a>
             </div>
-          <span class="more-meta"> 约 1420 字 </span>
-          <span class="more-meta"> 预计阅读 3 分钟 </span>
+          <span class="more-meta"> 约 675 字 </span>
+          <span class="more-meta"> 预计阅读 2 分钟 </span>
         
       </div>
     </header>
@@ -157,164 +157,15 @@
   <ul>
     <li><a href="#代码片段">代码片段</a></li>
     <li><a href="#答疑解惑">答疑解惑</a></li>
-    <li><a href="#拓展阅读">拓展阅读</a>
-      <ul>
-        <li><a href="#不定参数类型">不定参数类型</a></li>
-      </ul>
-    </li>
     <li><a href="#下期提问">下期提问</a></li>
   </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下init和的知识点🤔。</p>
+      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个channel的知识点🤔，同时复习下前9问中提到过的知识点。</p>
 <h2 id="代码片段">代码片段</h2>
-<ol>
-<li>(多选)关于init函数，下面说法正确的是()</li>
-</ol>
-<ul>
-<li>A. 一个包中，可以包含多个 init 函数；</li>
-<li>B. 程序编译时，先执行依赖包的 init 函数，再执行 main 包内的 init 函数；</li>
-<li>C. main 包中，不能有 init 函数；</li>
-<li>D. init 函数可以被其他函数调用；</li>
-</ul>
-<ol start="2">
-<li>观察下面代码片段，判断能否编译通过？如果可以，写出输出结果？</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kd">func</span> <span class="nf">getValue</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="mi">1</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">i</span> <span class="o">:=</span> <span class="nf">getValue</span><span class="p">()</span>
-	<span class="k">switch</span> <span class="nx">i</span><span class="p">.(</span><span class="kd">type</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">case</span> <span class="kt">int</span><span class="p">:</span>
-		<span class="nb">println</span><span class="p">(</span><span class="s">&#34;int&#34;</span><span class="p">)</span>
-	<span class="k">case</span> <span class="kt">string</span><span class="p">:</span>
-		<span class="nb">println</span><span class="p">(</span><span class="s">&#34;string&#34;</span><span class="p">)</span>
-	<span class="k">case</span> <span class="kd">interface</span><span class="p">{}:</span>
-		<span class="nb">println</span><span class="p">(</span><span class="s">&#34;interface&#34;</span><span class="p">)</span>
-	<span class="k">default</span><span class="p">:</span>
-		<span class="nb">println</span><span class="p">(</span><span class="s">&#34;unknown&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><img src="https://p3-tt.byteimg.com/origin/pgc-image/860aa797f89e4f53a18bc4eb6c77d339?from=pc" alt="思考后看答案"></p>
-<p>思考后看下方答案&hellip;</p>
-<hr>
-<h2 id="答疑解惑">答疑解惑</h2>
-<p>参考答案：</p>
-<p><strong>1. AB</strong> 关于init() 函数有几个需要注意的地方:</p>
-<ul>
-<li>init() 函数是用于程序执行前做包的初始化的函数，比如初始化包里的变量等;</li>
-<li>一个包可以出现多个 init() 函数,一个源文件也可以包含多个 init() 函数；</li>
-<li>同一个包中多个 init() 函数的执行顺序没有明确定义，但是不同包的init函数是根据包导入的依赖关系决定的；</li>
-<li>init() 函数在代码中不能被显示调用、不能被引用（赋值给函数变量），否则出现编译错误;</li>
-<li>一个包被引用多次，如 A import B,C import B,A import C，B 被引用多次，但 B 包只会初始化一次；</li>
-<li>引入包，不可出现死循坏。即 A import B,B import A，这种情况编译失败；</li>
-</ul>
-<p>同时在Uber的go语言编程规范中，关于init函数给出的建议是：<strong>尽快避免使用init()</strong></p>
-<p>init()是不可避免或可取的，代码应先尝试：</p>
-<ul>
-<li>无论程序环境或调用如何，都要完全确定。</li>
-<li>避免依赖于其他init()函数的顺序或副作用。虽然init()顺序是明确的，但代码可以更改， 因此init()函数之间的关系可能会使代码变得脆弱和容易出错。</li>
-<li>避免访问或操作全局或环境状态，如机器信息、环境变量、工作目录、程序参数/输入等。</li>
-<li>避免I/O，包括文件系统、网络和系统调用。</li>
-</ul>
-<p><strong>2. 编译失败</strong> 考点：类型选择；类型选择的语法形如：i.(type)，其中 i 是接口，type 是固定关键字，需要注意的是，只有接口类型才可以使用类型选择。使用interface{}传递任意类型数据是go语言的惯例用法；</p>
-<p><strong>你做对了吗？😊</strong></p>
-<p><strong>其他相关答案，欢迎在评论区留言补充!</strong></p>
-<h2 id="拓展阅读">拓展阅读</h2>
-<h3 id="不定参数类型">不定参数类型</h3>
-<p>不定参数是指函数传入的参数个数为不定数量。为了做到这点，首先需要将函数定义为接受不定参数类型：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">myPrint</span><span class="p">(</span><span class="nx">args</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
-	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">arg</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">args</span> <span class="p">{</span>
-		<span class="k">switch</span> <span class="nx">arg</span><span class="p">.(</span><span class="kd">type</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">case</span> <span class="kt">int</span><span class="p">:</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="s">&#34;is int type&#34;</span><span class="p">)</span>
-		<span class="k">case</span> <span class="kt">string</span><span class="p">:</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="s">&#34;is string type&#34;</span><span class="p">)</span>
-		<span class="k">default</span><span class="p">:</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="s">&#34;is unknown type&#34;</span><span class="p">)</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">v1</span> <span class="o">:=</span> <span class="s">&#34;abcd&#34;</span>
-	<span class="nx">v2</span> <span class="o">:=</span> <span class="mi">2345</span>
-	<span class="nx">v3</span> <span class="o">:=</span> <span class="mf">3.14</span>
-	<span class="nf">myPrint</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span> <span class="nx">v2</span><span class="p">,</span> <span class="nx">v3</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>该程序的执行结果为：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">abcd</span> <span class="nx">is</span> <span class="kt">string</span> <span class="kd">type</span>
-<span class="mi">2345</span> <span class="nx">is</span> <span class="kt">int</span> <span class="kd">type</span>
-<span class="mf">3.14</span> <span class="nx">is</span> <span class="nx">unknown</span> <span class="kd">type</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>形如&hellip;type格式的类型只能作为函数的参数类型存在，并且必须是最后一个参数。它是一个语法糖（syntactic sugar）。这种语法对语言的功能并没有影响，但是更方便程序员使用。通常来说，使用语法糖能够增加程序的可读性，从而减少程序出错的机会。</p>
-<p>从内部实现机理上来说，<strong>类型&hellip;type本质上是一个数组切片</strong>，也就是[]type，这也是为什么上面的参数args可以用for循环来获得每个传入的参数。</p>
-<h2 id="下期提问">下期提问</h2>
-<p>1.关于channel，下面语法正确的是()</p>
+<p>1.(多选)关于channel，下面语法正确的是()</p>
 <ul>
 <li>A. var ch chan int</li>
 <li>B. ch := make(chan int)</li>
@@ -381,7 +232,87 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>答案及解析将在下期文章中给出，欢迎大家在评论区留言，独乐乐不如众乐乐，交流学习，互相进步。</p>
+</div><p><img src="http://p9-tt-ipv6.byteimg.com/large/dfic-imagehandler/8887cb5f-c083-43bd-94b0-b7a7e3dcdba5" alt="思考后看答案"></p>
+<p>思考后看下方答案&hellip;</p>
+<hr>
+<h2 id="答疑解惑">答疑解惑</h2>
+<p>参考答案：</p>
+<p><strong>1. ABC</strong><br>
+A、B都是声明 channel；C 读取 channel；写 channel 是必须带上值，所以 D 错误。</p>
+<p><strong>2. A</strong><br>
+打印一个 map 中不存在的值时，返回元素类型的零值。这个例子中，m 的类型是 map[person]int，因为 m 中不存在 p，所以打印 int 类型的零值，即 0。</p>
+<p><strong>3. A</strong><br>
+第3题如果做错了，可以回顾下:第七问<a href="https://www.iyue.pub/post/go-question7-slice/">slice与类型系统</a> 这一期的知识点。其中需要注意，<strong>可变参数类型(…type)与数组切片元素打散(mySlice2&hellip;)的两种书写形式</strong>，区分记忆；</p>
+<p><strong>以上，你做对了吗？😊</strong></p>
+<p><strong>其他相关答案或补充知识点，欢迎在评论区留言补充!</strong></p>
+<h2 id="下期提问">下期提问</h2>
+<p>1.下面这段代码的输出结果？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>  
+    <span class="s">&#34;fmt&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>  
+    <span class="nx">a</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+    <span class="nx">t</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A.3</li>
+<li>B.4</li>
+<li>C.compilation error</li>
+</ul>
+<p>2.下面这段代码的输出结果？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">a</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">}</span>
+	<span class="nx">b</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">}</span>
+
+	<span class="k">if</span> <span class="nx">a</span> <span class="o">==</span> <span class="nx">b</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;equal&#34;</span><span class="p">)</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;not equal&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A. compilation error</li>
+<li>B. equal</li>
+<li>C. not equal</li>
+</ul>
+<p>答案及解析将在下期文章中给出，欢迎大家在评论区留言，独乐乐不如众乐乐，交流学习，互相进步。</p>
 <hr>
 <p><strong>欢迎转发和评论。更多优质原创文章，欢迎关注微信公众号“IYue爱月”或扫描下方二维码：</strong></p>
 <p><img src="/media/xujpxm_qrcode_for_gh_12cm.jpg" alt="xujpxm_qrcode_gh"></p>
@@ -395,7 +326,7 @@
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
     <span class="item-content">
-        2020-08-07
+        2020-08-21
         
     </span>
   </p>
@@ -424,13 +355,9 @@
           <a href="/tags/golang/">golang</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/post/go-question10-channel/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">Go学习每日一问(10)-channel</span>
-            <span class="prev-text nav-mobile">上一篇</span>
-          </a>
-        <a class="next" href="/post/go-question8-string-nil/">
-            <span class="next-text nav-default">Go学习每日一问(8)-string&amp;nil</span>
+        
+        <a class="next" href="/post/go-question9-inittype/">
+            <span class="next-text nav-default">Go学习每日一问(9)-init和类型选择</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>
