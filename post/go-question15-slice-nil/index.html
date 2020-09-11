@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Go学习每日一问(15)-nil切片 - IYue 爱月 | XUJPXM的博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author"
+    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个nil切片的知识点🤔
+" /><meta name="keywords"
+    content="Hugo, even, iyue, xujpxm, DevOps" />
+
+
+
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-2770385078098302",
+        enable_page_level_ads: true
+    });
+</script>
+
+
+<meta name="generator" content="Hugo 0.69.0 with theme even" />
+
+
+<link rel="canonical" href="https://www.iyue.pub/post/go-question15-slice-nil/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Go学习每日一问(15)-nil切片" />
+<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个nil切片的知识点🤔" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.iyue.pub/post/go-question15-slice-nil/" />
+<meta property="article:published_time" content="2020-09-10T07:30:07+08:00" />
+<meta property="article:modified_time" content="2020-09-10T07:30:07+08:00" />
+<meta itemprop="name" content="Go学习每日一问(15)-nil切片">
+<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个nil切片的知识点🤔">
+<meta itemprop="datePublished" content="2020-09-10T07:30:07&#43;08:00" />
+<meta itemprop="dateModified" content="2020-09-10T07:30:07&#43;08:00" />
+<meta itemprop="wordCount" content="636">
+
+
+
+<meta itemprop="keywords" content="golang," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go学习每日一问(15)-nil切片"/>
+<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个nil切片的知识点🤔"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">IYue</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item">首页</li>
+        </a><a href="/categories/">
+            <li class="mobile-menu-item">分类</li>
+        </a><a href="/tags/">
+            <li class="mobile-menu-item">标签</li>
+        </a><a href="/post/">
+            <li class="mobile-menu-item">归档</li>
+        </a><a href="/about/">
+            <li class="mobile-menu-item">关于</li>
+        </a><a href="/friends/">
+            <li class="mobile-menu-item">友情链接</li>
+        </a>
+    </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">IYue</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/friends/">友情链接</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Go学习每日一问(15)-nil切片</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-09-10 </span>
+        <div class="post-category">
+            <a href="/categories/go%E6%AF%8F%E6%97%A5%E4%B8%80%E9%97%AE/"> go每日一问 </a>
+            </div>
+          <span class="more-meta"> 约 636 字 </span>
+          <span class="more-meta"> 预计阅读 2 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#日省吾身">日省吾身</a></li>
+    <li><a href="#答疑解惑">答疑解惑</a></li>
+    <li><a href="#下期提问">下期提问</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个nil切片的知识点🤔</p>
+<h2 id="日省吾身">日省吾身</h2>
+<p>1.下面代码的输出结果是?</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">l1</span> <span class="p">[]</span><span class="kt">int</span>
+	<span class="kd">var</span> <span class="nx">l2</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span>
+	<span class="k">switch</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="nx">l1</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">:</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;l1 is nil&#34;</span><span class="p">)</span>
+	<span class="k">case</span> <span class="nx">l2</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">:</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;l2 is nil&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A. l1 is nil</li>
+<li>B. l2 is nil</li>
+<li>C. compilation error</li>
+</ul>
+<p>2.下面代码的输出结果是？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="mi">66</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">n</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A. B</li>
+<li>B. 66</li>
+<li>C. compilation error</li>
+</ul>
+<p><img src="http://p1.pstatp.com/origin/dfic-imagehandler/b9349540-88c6-4dee-9a4f-880be17cd361" alt="思考后看答案"></p>
+<p>思考后看下方答案&hellip;</p>
+<hr>
+<h2 id="答疑解惑">答疑解惑</h2>
+<p>参考答案：</p>
+<p><strong>1.  A</strong>  知识点：nil 切片和空切片</p>
+<ul>
+<li>nil 切片一般用来表示一个<strong>不存在</strong>的切片, nil 切片和 nil 相等;</li>
+<li>空切片表示一个空的集合，和 nil 不相等；<code>[]int{}</code>直接创建并初始化包含0个元素的切片，切片元素为零个，不代表该切片不存在；</li>
+</ul>
+<p>比如在一个瓶子中，nil代表瓶子是真空的，什么也没有；而空切片好比瓶子里装满了空气，虽然瓶子看上去也是空的，但区别很大。(比喻可能不当，如果你有更好的记忆方法，欢迎在下方留言)</p>
+<p><strong>2.  A</strong>  输出结果为：B</p>
+<p>UTF-8编码中，十进制66对应的ASCII码是：B</p>
+<p><strong>以上，你做对了吗？😊</strong></p>
+<p><strong>其他相关答案或补充知识点，欢迎在评论区留言补充！</strong></p>
+<h2 id="下期提问">下期提问</h2>
+<p>1.下面代码的输出结果?（）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">increment</span><span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="o">*</span><span class="nx">p</span><span class="o">++</span>
+	<span class="k">return</span> <span class="o">*</span><span class="nx">p</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="mi">1</span>
+	<span class="nf">increment</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">n</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A. 1</li>
+<li>B. 2</li>
+<li>C. 3</li>
+</ul>
+<p>2.对add()函数调用正确的是?（）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">args</span> <span class="o">...</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+
+    <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">arg</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">args</span> <span class="p">{</span>
+        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">arg</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">sum</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A. add(1, 2)</li>
+<li>B. add(1, 3, 7)</li>
+<li>C. add([]int{1, 2})</li>
+<li>D. add([]int{1, 3, 7}…)</li>
+</ul>
+<p>答案及解析将在下期文章中给出，欢迎大家在评论区写出你的答案；<strong>独乐乐不如众乐乐，交流学习，互相进步</strong>。</p>
+<hr>
+<p><strong>欢迎转发和评论。更多优质原创文章，欢迎关注微信公众号“IYue爱月”或扫描下方二维码：</strong></p>
+<p><img src="/media/xujpxm_qrcode_for_gh_12cm.jpg" alt="xujpxm_qrcode_gh"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">xujpxm</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-09-10
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 非商业转载请注明出处(作者，原文链接),商业转载请联系作者授权,谢谢!</span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/wechat_pay_qrcode.jpeg">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/alipay_qrcode.jpeg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/golang/">golang</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/go-question14-defer/">
+            <span class="next-text nav-default">Go学习每日一问(14)-defer预计算参数</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="xujpxm/myblog"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+    <a href="mailto:xujpxm@163.com,xujpxm@gmail.com" class="iconfont icon-email" title="email"></a>
+    <a href="https://github.com/xujpxm/" class="iconfont icon-github" title="github"></a>
+    <a href="https://www.iyue.pub/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+    <span class="power-by">
+        由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    </span>
+    <span class="division">|</span>
+    <span class="theme-info">
+        主题 -
+        <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+    </span>
+
+    
+
+    <span class="copyright-year">
+        &copy;
+        2018 -
+        2020
+        <span class="heart">
+            <i class="iconfont icon-heart"></i>
+        </span>
+        <span
+            class="author">xujpxm</span>
+    </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-119883712-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

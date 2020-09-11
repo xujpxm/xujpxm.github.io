@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Fri, 04 Sep 2020 18:25:07 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 10 Sep 2020 07:30:07 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go学习每日一问(15)-nil切片</title>
+      <link>https://www.iyue.pub/post/go-question15-slice-nil/</link>
+      <pubDate>Thu, 10 Sep 2020 07:30:07 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question15-slice-nil/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天学习一个nil切片的知识点🤔&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go学习每日一问(14)-defer预计算参数</title>
+      <link>https://www.iyue.pub/post/go-question14-defer/</link>
+      <pubDate>Sun, 06 Sep 2020 06:30:07 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question14-defer/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下defer预计算参数的一个知识点🤔&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Go学习每日一问(13)-结构体嵌套</title>
