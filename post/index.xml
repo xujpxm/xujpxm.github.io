@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Thu, 10 Sep 2020 07:30:07 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 17 Sep 2020 13:20:07 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go学习每日一问(16)-不定参数类型</title>
+      <link>https://www.iyue.pub/post/go-question16-...parameters/</link>
+      <pubDate>Thu, 17 Sep 2020 13:20:07 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question16-...parameters/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:&lt;strong&gt;不定参数类型&lt;/strong&gt;🤔&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Go学习每日一问(15)-nil切片</title>
