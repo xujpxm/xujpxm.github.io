@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Go学习每日一问(17)-接口</title>
+      <link>https://www.iyue.pub/post/go-question17-interface/</link>
+      <pubDate>Mon, 12 Oct 2020 13:00:07 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question17-interface/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:&lt;strong&gt;接口&lt;/strong&gt;🤔&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Go学习每日一问(16)-不定参数类型</title>
       <link>https://www.iyue.pub/post/go-question16-...parameters/</link>
       <pubDate>Thu, 17 Sep 2020 13:20:07 +0800</pubDate>
