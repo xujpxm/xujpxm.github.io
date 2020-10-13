@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Go学习每日一问(18)-map元素查找 - IYue 爱月 | XUJPXM的博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author"
+    content="xujpxm" /><meta name="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:map元素查找🤔
+" /><meta name="keywords"
+    content="Hugo, even, iyue, xujpxm, DevOps" />
+
+
+
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-2770385078098302",
+        enable_page_level_ads: true
+    });
+</script>
+
+
+<meta name="generator" content="Hugo 0.69.0 with theme even" />
+
+
+<link rel="canonical" href="https://www.iyue.pub/post/go-question18-map-ok/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Go学习每日一问(18)-map元素查找" />
+<meta property="og:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:map元素查找🤔" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.iyue.pub/post/go-question18-map-ok/" />
+<meta property="article:published_time" content="2020-10-13T12:43:03+08:00" />
+<meta property="article:modified_time" content="2020-10-13T12:43:03+08:00" />
+<meta itemprop="name" content="Go学习每日一问(18)-map元素查找">
+<meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:map元素查找🤔">
+<meta itemprop="datePublished" content="2020-10-13T12:43:03&#43;08:00" />
+<meta itemprop="dateModified" content="2020-10-13T12:43:03&#43;08:00" />
+<meta itemprop="wordCount" content="942">
+
+
+
+<meta itemprop="keywords" content="golang," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go学习每日一问(18)-map元素查找"/>
+<meta name="twitter:description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:map元素查找🤔"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">IYue</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item">首页</li>
+        </a><a href="/categories/">
+            <li class="mobile-menu-item">分类</li>
+        </a><a href="/tags/">
+            <li class="mobile-menu-item">标签</li>
+        </a><a href="/post/">
+            <li class="mobile-menu-item">归档</li>
+        </a><a href="/about/">
+            <li class="mobile-menu-item">关于</li>
+        </a><a href="/friends/">
+            <li class="mobile-menu-item">友情链接</li>
+        </a>
+    </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">IYue</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/friends/">友情链接</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Go学习每日一问(18)-map元素查找</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-10-13 </span>
+        <div class="post-category">
+            <a href="/categories/go%E6%AF%8F%E6%97%A5%E4%B8%80%E9%97%AE/"> go每日一问 </a>
+            </div>
+          <span class="more-meta"> 约 942 字 </span>
+          <span class="more-meta"> 预计阅读 2 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#日省吾身">日省吾身</a></li>
+    <li><a href="#答疑解惑">答疑解惑</a></li>
+    <li><a href="#下期提问">下期提问</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:<strong>map元素查找</strong>🤔</p>
+<h2 id="日省吾身">日省吾身</h2>
+<p>1.下面代码中 A B 两处应该怎么修改才能顺利编译？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">m</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span>        <span class="c1">//A
+</span><span class="c1"></span>    <span class="nx">m</span><span class="p">[</span><span class="s">&#34;a&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nx">v</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">[</span><span class="s">&#34;b&#34;</span><span class="p">];</span> <span class="nx">v</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>  <span class="c1">//B
+</span><span class="c1"></span>        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>2.写出下面代码片段的输出结果？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">s</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;a&#34;</span><span class="p">,</span> <span class="s">&#34;b&#34;</span><span class="p">,</span> <span class="s">&#34;c&#34;</span><span class="p">}</span>
+	<span class="nx">s1</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+	<span class="nx">s2</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+	<span class="nx">s3</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="nb">cap</span><span class="p">(</span><span class="nx">s</span><span class="p">)]</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;s1:&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s1</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s1</span><span class="p">))</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;s2:&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s2</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s2</span><span class="p">))</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;s3:&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s3</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s3</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>思考后看下方答案&hellip;</p>
+<p><img src="http://p1.pstatp.com/origin/dfic-imagehandler/fef995c4-f6b1-4980-a460-691560948191" alt="思考后看答案"></p>
+<hr>
+<h2 id="答疑解惑">答疑解惑</h2>
+<p><strong>参考答案：</strong></p>
+<p><strong>1. 原程序编译报错，改进后的程序示例如下:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// var m map[string]int        //A
+</span><span class="c1"></span>    <span class="nx">m</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>      <span class="c1">//A改进
+</span><span class="c1"></span>    <span class="nx">m</span><span class="p">[</span><span class="s">&#34;a&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+    <span class="c1">// if v := m[&#34;b&#34;]; v != nil {  //B
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">[</span><span class="s">&#34;b&#34;</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>       <span class="c1">//B改进
+</span><span class="c1"></span>        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>知识点：<strong>map</strong></p>
+<ul>
+<li>在 A 处，只进行了map的声明，没有分配内存空间，即没有初始化，当前 m 是一个 nil map，不能直接赋值；go中推荐使用内置函数<code>make()</code>或字面量的方式进行map的初始化；</li>
+<li>在 B 处，从map中查找一个特定的值，推荐使用改进后的写法; 判断是否找到了特定的值，不需要检查取到的值是否为nil，只需查看第二个返回值<code>ok</code>；它是一个bool型，返回true表示找到了对应的数据；配合 <code>:=</code> 操作符，减少代码冗余，看起来清晰易懂；</li>
+</ul>
+<p><strong>2. 程序的输出结果为：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">s1</span><span class="p">:</span> <span class="mi">0</span> <span class="mi">3</span>
+<span class="nx">s2</span><span class="p">:</span> <span class="mi">2</span> <span class="mi">3</span>
+<span class="nx">s3</span><span class="p">:</span> <span class="mi">1</span> <span class="mi">2</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>知识点: <strong>切片的创建</strong></p>
+<ul>
+<li>基于数组切片，可以使用操作符创建新的切片，形如s[n:l:c]，n是偏移的起始位置，l是偏移的长度结束，c是偏移的容量结束位置；l-n 就是新切片的长度， c-n 就是新切片的容量；<strong>如果n省略，默认为0</strong>；</li>
+<li>有意思的是，n、l和c并不是当前切片的索引，所以l是可以超出当前切片的长度的，但不能超出当前切片的容量；比如假设oldSlice只有5个元素，但容量是10；newSlice却可以基于oldSlice的前7个元素创建，newSlice中超出oldSlice的部分都会填上0；</li>
+</ul>
+<p><strong>以上，你做对了吗？😊</strong></p>
+<p><strong>其他相关答案或补充知识点，欢迎在评论区留言补充！</strong></p>
+<h2 id="下期提问">下期提问</h2>
+<ol>
+<li>判断下面代码片段的输出结果?</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">incrementA</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">n</span> <span class="kt">int</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">n</span><span class="o">++</span>
+	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">n</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">incrementB</span><span class="p">()</span> <span class="p">(</span><span class="nx">m</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">m</span><span class="o">++</span>
+	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">m</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">incrementA</span><span class="p">())</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">incrementB</span><span class="p">())</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>A. 0 0</li>
+<li>B. 0 1</li>
+<li>C. 1 0</li>
+<li>D. 1 1</li>
+</ul>
+<p>答案及解析将在下期文章中给出，欢迎大家在评论区写出你的答案；<strong>独乐乐不如众乐乐，欢迎交流学习，互相进步。</strong></p>
+<hr>
+<p><strong>欢迎转发和评论。更多优质原创文章，欢迎关注微信公众号“IYue爱月”或扫描下方二维码：</strong></p>
+<p><img src="/media/xujpxm_qrcode_for_gh_12cm.jpg" alt="xujpxm_qrcode_gh"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">xujpxm</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-10-13
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 非商业转载请注明出处(作者，原文链接),商业转载请联系作者授权,谢谢!</span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/wechat_pay_qrcode.jpeg">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/media/alipay_qrcode.jpeg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/golang/">golang</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/go-question17-interface/">
+            <span class="next-text nav-default">Go学习每日一问(17)-接口</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="xujpxm/myblog"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+    <a href="mailto:xujpxm@163.com,xujpxm@gmail.com" class="iconfont icon-email" title="email"></a>
+    <a href="https://github.com/xujpxm/" class="iconfont icon-github" title="github"></a>
+    <a href="https://www.iyue.pub/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+    <span class="power-by">
+        由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    </span>
+    <span class="division">|</span>
+    <span class="theme-info">
+        主题 -
+        <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+    </span>
+
+    
+
+    <span class="copyright-year">
+        &copy;
+        2018 -
+        2020
+        <span class="heart">
+            <i class="iconfont icon-heart"></i>
+        </span>
+        <span
+            class="author">xujpxm</span>
+    </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-119883712-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

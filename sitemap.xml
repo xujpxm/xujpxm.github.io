@@ -3,41 +3,48 @@
   
   <url>
     <loc>https://www.iyue.pub/categories/</loc>
-    <lastmod>2020-10-12T13:00:07+08:00</lastmod>
+    <lastmod>2020-10-13T12:43:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/tags/golang/</loc>
-    <lastmod>2020-10-12T13:00:07+08:00</lastmod>
+    <lastmod>2020-10-13T12:43:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://www.iyue.pub/post/go-question17-interface/</loc>
-    <lastmod>2020-10-12T13:00:07+08:00</lastmod>
+    <loc>https://www.iyue.pub/post/go-question18-map-ok/</loc>
+    <lastmod>2020-10-13T12:43:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/categories/go%E6%AF%8F%E6%97%A5%E4%B8%80%E9%97%AE/</loc>
-    <lastmod>2020-10-12T13:00:07+08:00</lastmod>
+    <lastmod>2020-10-13T12:43:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/post/</loc>
-    <lastmod>2020-10-12T13:00:07+08:00</lastmod>
+    <lastmod>2020-10-13T12:43:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://www.iyue.pub/tags/</loc>
+    <lastmod>2020-10-13T12:43:03+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.iyue.pub/post/go-question17-interface/</loc>
     <lastmod>2020-10-12T13:00:07+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
