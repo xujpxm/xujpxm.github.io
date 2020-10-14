@@ -61,7 +61,7 @@
 <meta itemprop="description" content="每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:defer与返回值🤔">
 <meta itemprop="datePublished" content="2020-10-13T13:43:03&#43;08:00" />
 <meta itemprop="dateModified" content="2020-10-13T13:43:03&#43;08:00" />
-<meta itemprop="wordCount" content="873">
+<meta itemprop="wordCount" content="869">
 
 
 
@@ -144,7 +144,7 @@
         <div class="post-category">
             <a href="/categories/go%E6%AF%8F%E6%97%A5%E4%B8%80%E9%97%AE/"> go每日一问 </a>
             </div>
-          <span class="more-meta"> 约 873 字 </span>
+          <span class="more-meta"> 约 869 字 </span>
           <span class="more-meta"> 预计阅读 2 分钟 </span>
         
       </div>
@@ -219,7 +219,7 @@
 <li>D. 1 1</li>
 </ul>
 <p>思考后看下方答案&hellip;</p>
-<p><img src="http://p1.pstatp.com/origin/dfic-imagehandler/fef995c4-f6b1-4980-a460-691560948191" alt="思考后看答案"></p>
+<p><img src="http://p1.pstatp.com/origin/dfic-imagehandler/c83d84de-b8cb-463d-9f04-4679d1fb7cdf" alt="思考后看答案"></p>
 <hr>
 <h2 id="答疑解惑">答疑解惑</h2>
 <p><strong>参考答案：</strong></p>
@@ -228,9 +228,9 @@
 <li>在之前的<a href="https://www.iyue.pub/post/go-question14-defer/">14问</a>中我们有提到，Go 语言的 defer 一般在当前函数或者方法返回之前执行，一般用于调用一些收尾的函数，例如关闭文件描述符、关闭数据库连接以及解锁资源等；</li>
 <li>跟 Go 语言中大多数函数调用一样，都是采用值传递的；</li>
 <li>在之前的<a href="https://www.iyue.pub/post/go-question-defer/">1问</a>中，我们还提到当一个函数中同时存在多个defer语句时，defer语句的调用同栈一样，遵循先进后出的原则；</li>
-<li>这里涉及的知识点是：**defer在匿名返回值和具名返回值函数中的表现不同；**为避免采坑，要记住一点：<strong>return xxx 这一条语句不是一条原子指令!</strong></li>
+<li>这里涉及的知识点是：<strong>defer在匿名返回值和具名返回值函数中的表现不同</strong>; 为避免踩坑，要记住一点：<strong>return xxx 这一条语句不是一条原子指令!</strong></li>
 </ul>
-<p>已上述匿名函数举例，最后return的过程可以拆分成以下几步：</p>
+<p>以上述匿名函数举例，最后return的过程可以拆分成以下几步：</p>
 <ol>
 <li>将n赋值给一个新的返回值nValue，nValue := n（可以理解成自动创建了一个新的返回值nValue）</li>
 <li>然后检查是否有defer函数，如果有则执行</li>
