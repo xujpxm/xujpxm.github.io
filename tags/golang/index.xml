@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Tue, 13 Oct 2020 12:43:03 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 13 Oct 2020 13:43:03 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go学习每日一问(19)-当defer遇到return</title>
+      <link>https://www.iyue.pub/post/go-question19-defer-return/</link>
+      <pubDate>Tue, 13 Oct 2020 13:43:03 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question19-defer-return/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天学习下go中的一个知识点:&lt;strong&gt;defer与返回值&lt;/strong&gt;🤔&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Go学习每日一问(18)-map元素查找</title>
