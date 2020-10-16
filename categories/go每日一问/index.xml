@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>xujpxm</copyright>
-    <lastBuildDate>Tue, 13 Oct 2020 13:43:03 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 15 Oct 2020 21:48:17 +0800</lastBuildDate>
     
 	<atom:link href="https://www.iyue.pub/categories/go%E6%AF%8F%E6%97%A5%E4%B8%80%E9%97%AE/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go学习每日一问(20)-当defer遇到return(2)</title>
+      <link>https://www.iyue.pub/post/go-question20-defer-return-2/</link>
+      <pubDate>Thu, 15 Oct 2020 21:48:17 +0800</pubDate>
+      
+      <guid>https://www.iyue.pub/post/go-question20-defer-return-2/</guid>
+      <description>&lt;p&gt;每次学习并整理一个Golang的知识点，每天进步一点点。今天巩固下19问中提到的知识点:&lt;strong&gt;defer与返回值&lt;/strong&gt;🤔&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Go学习每日一问(19)-当defer遇到return</title>
